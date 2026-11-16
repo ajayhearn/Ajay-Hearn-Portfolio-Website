@@ -17,11 +17,20 @@
       <span id="status" class="status" role="status"></span>
       <a href="/" target="_blank" rel="noopener" class="btn ghost">View site ↗</a>
       <button id="save" class="btn primary" disabled>Save changes</button>
-      <a href="/cdn-cgi/access/logout" class="btn ghost">Log out</a>
+      <button id="logout" class="btn ghost" hidden>Log out</button>
     </div>
   </header>
 
   <main>
+    <form id="login" class="login" hidden>
+      <h1>Admin login</h1>
+      <label class="field">
+        <span>Password</span>
+        <input type="password" id="password" autocomplete="current-password" required autofocus />
+      </label>
+      <button type="submit" class="btn primary">Log in</button>
+      <p id="login-error" class="message error" role="alert"></p>
+    </form>
     <p id="message" class="message">Loading…</p>
     <form id="editor" hidden></form>
   </main>

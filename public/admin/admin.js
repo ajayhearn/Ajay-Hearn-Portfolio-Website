@@ -353,18 +353,73 @@ function build() {
   form.replaceChildren(...body);
 }
 
+// ---------- Login ----------
+const loginForm = document.getElementById("login");
+const loginError = document.getElementById("login-error");
+const logoutBtn = document.getElementById("logout");
+
+function showLogin() {
+  form.hidden = true;
+  messageEl.hidden = true;
+  logoutBtn.hidden = true;
+  saveBtn.disabled = true;
+  document.getElementById("who").textContent = "";
+  loginForm.hidden = false;
+  document.getElementById("password").focus();
+}
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  loginError.textContent = "";
+  const password = document.getElementById("password").value;
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    loginError.textContent = data.error || `Error ${res.status}`;
+    return;
+  }
+  document.getElementById("password").value = "";
+  loginForm.hidden = true;
+  if (content) {
+    // Logged in again after the session ran out: keep the unsaved edits
+    form.hidden = false;
+    logoutBtn.hidden = false;
+    document.getElementById("who").textContent = "Logged in";
+    saveBtn.disabled = !dirty;
+    setStatus(dirty ? "Logged in again. Click Save changes." : "");
+  } else {
+    load();
+  }
+});
+
+logoutBtn.addEventListener("click", async () => {
+  if (dirty && !confirm("You have unsaved changes. Log out anyway?")) return;
+  await fetch("/api/admin/logout", { method: "POST" });
+  dirty = false;
+  content = null;
+  setStatus("");
+  showLogin();
+});
+
 // ---------- Load & save ----------
 async function load() {
   try {
     const res = await fetch("/api/admin/content", { cache: "no-store" });
+    if (res.status === 401) return showLogin();
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
     content = data.content;
-    document.getElementById("who").textContent = `Signed in as ${data.email}`;
+    document.getElementById("who").textContent = "Logged in";
+    logoutBtn.hidden = false;
     messageEl.hidden = true;
     form.hidden = false;
     build();
   } catch (err) {
+    messageEl.hidden = false;
     messageEl.textContent = `Couldn't open the editor: ${err.message}`;
     messageEl.className = "message error";
   }
@@ -379,6 +434,10 @@ saveBtn.addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(content),
     });
+    if (res.status === 401) {
+      setStatus("Your login ran out. Log in again; your changes are kept.", "error");
+      return showLogin();
+    }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
     content = data.content; // use the cleaned-up version the server stored
