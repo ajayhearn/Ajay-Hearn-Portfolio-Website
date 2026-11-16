@@ -41,27 +41,29 @@ Locally, the admin panel skips login (set by `.dev.vars`, which never gets uploa
    ```bash
    npx wrangler kv namespace create CONTENT
    ```
-4. **Deploy:**
-   ```bash
-   npm run deploy
-   ```
-   The first time, it asks you to create the project. Your site will be at
-   `https://ajay-portfolio.pages.dev` (or similar).
+4. **Connect GitHub so every push deploys automatically:** in the Cloudflare dashboard go to
+   **Workers & Pages → Create → Pages → Connect to Git**, pick this repository, and use:
+   - Project name: `ajay-hearn-portfolio`
+   - Framework preset: `None`
+   - Build command: *(leave empty)*
+   - Build output directory: `public`
+
+   Your site will be at `https://ajay-hearn-portfolio.pages.dev`.
 5. **Protect the admin area with Cloudflare Access:**
    1. In the Cloudflare dashboard, open **Zero Trust**. The first time, pick a team name
       (e.g. `ajay`) and the **Free** plan.
    2. Go to **Access → Applications → Add an application → Self-hosted**.
-   3. Add two public hostnames, both for your site's domain (e.g. `ajay-portfolio.pages.dev`):
+   3. Add two public hostnames, both for `ajay-hearn-portfolio.pages.dev`:
       one with path `admin`, one with path `api/admin`.
    4. Add a policy: **Action** = Allow, **Include** = Emails = *your email*.
    5. Save, then open the application and copy the **Application Audience (AUD) Tag**.
-6. **Fill in `wrangler.toml`:**
-   ```toml
-   TEAM_DOMAIN = "ajay.cloudflareaccess.com"   # your team name + .cloudflareaccess.com
-   POLICY_AUD = "the AUD tag you copied"
-   ADMIN_EMAILS = "you@example.com"
+6. **Save the login settings as secrets** (kept out of this public repo):
+   ```bash
+   npx wrangler pages secret put TEAM_DOMAIN --project-name ajay-hearn-portfolio   # e.g. ajay.cloudflareaccess.com
+   npx wrangler pages secret put POLICY_AUD --project-name ajay-hearn-portfolio    # the AUD tag
+   npx wrangler pages secret put ADMIN_EMAILS --project-name ajay-hearn-portfolio  # your email
    ```
-   Then run `npm run deploy` again.
+   Then redeploy (push a commit, or click **Retry deployment** in the dashboard).
 7. Visit `/admin`, enter your email, type in the code you're sent, and start editing.
 
 If you later add a custom domain (e.g. `ajay.uk`), add it to the Access application too.
