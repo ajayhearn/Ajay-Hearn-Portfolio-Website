@@ -41,14 +41,12 @@ Locally, the admin panel skips login (set by `.dev.vars`, which never gets uploa
    ```bash
    npx wrangler kv namespace create CONTENT
    ```
-4. **Connect GitHub so every push deploys automatically:** in the Cloudflare dashboard go to
-   **Workers & Pages → Create → Pages → Connect to Git**, pick this repository, and use:
-   - Project name: `ajay-hearn-portfolio`
-   - Framework preset: `None`
-   - Build command: *(leave empty)*
-   - Build output directory: `public`
-
-   Your site will be at `https://ajay-hearn-portfolio.pages.dev`.
+4. **Deploy:**
+   ```bash
+   npm run deploy
+   ```
+   Your site is at `https://ajay-hearn-portfolio.pages.dev`. Pushing to GitHub does **not** deploy;
+   run this command again after changing code. (Admin panel edits go live straight away.)
 5. **Protect the admin area with Cloudflare Access:**
    1. In the Cloudflare dashboard, open **Zero Trust**. The first time, pick a team name
       (e.g. `ajay`) and the **Free** plan.

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler pages dev",
-    "deploy": "wrangler pages deploy"
+    "deploy": "wrangler pages deploy --project-name ajay-hearn-portfolio --branch main"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
