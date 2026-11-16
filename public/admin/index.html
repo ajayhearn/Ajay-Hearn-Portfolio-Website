@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Admin | Portfolio</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <strong>☁️ Portfolio admin</strong>
+    <span id="who" class="who"></span>
+    <div class="actions">
+      <span id="status" class="status" role="status"></span>
+      <a href="/" target="_blank" rel="noopener" class="btn ghost">View site ↗</a>
+      <button id="save" class="btn primary" disabled>Save changes</button>
+      <a href="/cdn-cgi/access/logout" class="btn ghost">Log out</a>
+    </div>
+  </header>
+
+  <main>
+    <p id="message" class="message">Loading…</p>
+    <form id="editor" hidden></form>
+  </main>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
