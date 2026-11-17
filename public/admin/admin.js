@@ -65,7 +65,7 @@ const SCHEMA = [
       { key: "when", label: "Dates" },
       { key: "title", label: "Title (e.g. Role · Company)" },
       { key: "description", label: "Description", type: "textarea" },
-      { key: "images", label: "Images", type: "images" },
+      { key: "images", label: "Images", type: "images", max: 6 },
       { key: "readMore", label: "Show a “Read more” button linking to its own page", type: "toggle" },
       { key: "details", label: "Read more page: full write-up", type: "textarea", tall: true, showIf: "readMore" },
     ],

@@ -46,7 +46,7 @@ function link(text, url, extra = {}) {
 
 const isUploadedImage = (img) => /^\/api\/images\/[a-f0-9-]+$/.test(img?.src || "");
 
-// Up to 2 images side by side; clicking one opens it full size
+// Images in a grid (up to 6 for experience, 2 elsewhere); clicking one opens it full size
 function gallery(images) {
   const imgs = (images || []).filter(isUploadedImage);
   if (!imgs.length) return null;
