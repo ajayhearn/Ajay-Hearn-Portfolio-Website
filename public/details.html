@@ -7,17 +7,13 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
-  <script>
-    (function () {
-      const saved = localStorage.getItem("theme");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
-    })();
-  </script>
+  <script src="/prefs.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <noscript><p class="noscript">This site needs JavaScript turned on to show its content.</p></noscript>
   <div class="sky" aria-hidden="true">
     <div class="stars"></div>
     <div class="cloud c1"></div>
@@ -28,9 +24,9 @@
   </div>
 
   <header class="nav">
-    <a href="/" class="logo">☁️ <span id="logo-first">Ajay</span><span class="accent" id="logo-last">.H</span></a>
-    <nav>
-      <ul class="nav-links">
+    <a href="/" class="logo"><span aria-hidden="true">☁️</span> <span id="logo-first">Ajay</span><span class="accent" id="logo-last">.H</span></a>
+    <nav aria-label="Main">
+      <ul class="nav-links" id="site-menu">
         <li><a href="/#about">About</a></li>
         <li><a href="/#skills">Skills</a></li>
         <li><a href="/#projects">Projects</a></li>
@@ -40,12 +36,18 @@
         <li><a href="/#contact">Contact</a></li>
       </ul>
     </nav>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
-    </button>
+    <div class="nav-controls">
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <!-- The accessibility button and its settings panel are added here by common.js -->
+      <button class="theme-toggle icon-btn" id="themeToggle" aria-pressed="false" aria-label="Dark mode">
+        <span class="icon-sun" aria-hidden="true">☀️</span><span class="icon-moon" aria-hidden="true">🌙</span>
+      </button>
+    </div>
   </header>
 
-  <main class="details-page">
+  <main class="details-page" id="main" tabindex="-1">
     <a id="back" class="back-link" href="/">← Back</a>
     <article class="card details-card" id="details">
       <p class="message">Loading…</p>
@@ -53,7 +55,7 @@
   </main>
 
   <footer class="footer">
-    <p>© <span id="year"></span> <span id="footer-name">Ajay Hearn</span> &middot; Built by hand and deployed to the cloud ☁️</p>
+    <p>© <span id="year"></span> <span id="footer-name">Ajay Hearn</span> &middot; Built by hand and deployed to the cloud <span aria-hidden="true">☁️</span></p>
   </footer>
 
   <script src="/common.js"></script>

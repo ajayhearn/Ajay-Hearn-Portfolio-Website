@@ -19,6 +19,8 @@ certifications, references, images and links.
 | How content is shown on the page | `public/script.js` |
 | Helpers shared by both pages (theme toggle, images, links) | `public/common.js` |
 | The Read more page | `public/details.html`, `public/details.js` |
+| Accessibility menu and phone menu | `public/common.js` (bottom of the file); styles at the end of `public/styles.css` |
+| Settings applied before the page draws (theme, text size...) | `public/prefs.js` |
 | The admin panel's form fields | `public/admin/admin.js` (the `SCHEMA` list at the top) |
 | What the server accepts and saves | `lib/content.js` |
 

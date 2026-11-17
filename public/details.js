@@ -41,13 +41,15 @@ function renderDetails(c) {
 
   box.replaceChildren(
     ...[
-      el("p", { class: "eyebrow", text: eyebrow }),
+      isProject
+        ? el("p", { class: "eyebrow" }, [el("span", { "aria-hidden": "true", text: `${item.icon || "📦"} ` }), document.createTextNode(section.label)])
+        : el("p", { class: "eyebrow", text: eyebrow }),
       el("h1", { text: item.title }),
       item.description ? el("p", { class: "summary", text: item.description }) : null,
       isProject && item.tags?.length ? el("ul", { class: "tags" }, item.tags.map((t) => el("li", { text: t }))) : null,
       gallery(item.images),
       item.details ? el("div", { class: "body", text: item.details }) : null,
-      isProject ? el("div", { class: "project-links" }, [link("GitHub", item.github), link("Live ↗", item.live)]) : null,
+      isProject ? el("div", { class: "project-links" }, [link("GitHub", item.github), link("Live demo", item.live, { icon: "↗", after: true })]) : null,
     ].filter(Boolean)
   );
 }

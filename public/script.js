@@ -24,7 +24,10 @@ function render(c) {
   document.getElementById("skills-list").replaceChildren(
     ...(c.skills || []).map((group) =>
       el("div", { class: "card skill-group" }, [
-        el("h3", { text: `${group.icon || ""} ${group.title || ""}`.trim() }),
+        el("h3", {}, [
+          group.icon ? el("span", { "aria-hidden": "true", text: `${group.icon} ` }) : null,
+          document.createTextNode(group.title || ""),
+        ]),
         el("ul", { class: "chips" }, (group.items || []).map((s) => el("li", { text: s }))),
       ])
     )
@@ -34,8 +37,11 @@ function render(c) {
     ...(c.projects || []).map((p) =>
       el("article", { class: "card project" }, [
         el("div", { class: "project-head" }, [
-          el("span", { class: "project-icon", text: p.icon || "📦" }),
-          el("div", { class: "project-links" }, [link("GitHub", p.github), link("Live ↗", p.live)]),
+          el("span", { class: "project-icon", "aria-hidden": "true", text: p.icon || "📦" }),
+          el("div", { class: "project-links" }, [
+            link("GitHub", p.github, { "aria-label": `${p.title}: GitHub (opens in a new tab)` }),
+            link("Live", p.live, { icon: "↗", after: true, "aria-label": `${p.title}: live demo (opens in a new tab)` }),
+          ]),
         ]),
         gallery(p.images),
         el("h3", { text: p.title }),
@@ -67,7 +73,7 @@ function render(c) {
         // An uploaded image takes the icon's place; otherwise show the chosen emoji
         isUploadedImage(cert.images?.[0])
           ? el("img", { class: "cert-icon", src: cert.images[0].src, alt: cert.images[0].alt || "", loading: "lazy" })
-          : el("span", { class: "cert-icon", text: cert.icon || "🏅" }),
+          : el("span", { class: "cert-icon", "aria-hidden": "true", text: cert.icon || "🏅" }),
         el("div", {}, [el("strong", { text: cert.title }), el("small", { text: cert.detail })]),
       ])
     )
@@ -88,7 +94,7 @@ function render(c) {
   const ct = c.contact || {};
   document.getElementById("contact-links").replaceChildren(
     ...[
-      ct.email && link("✉️ Email me", `mailto:${ct.email}`, { class: "btn primary" }),
+      ct.email && link("Email me", `mailto:${ct.email}`, { icon: "✉️", class: "btn primary" }),
       link("LinkedIn", ct.linkedin, { class: "btn ghost" }),
       link("GitHub", ct.github, { class: "btn ghost" }),
       link("Download CV", ct.cv, { class: "btn ghost" }),
@@ -124,7 +130,7 @@ function typeTerminal(rows) {
     return span;
   });
 
-  if (reduceMotion) {
+  if (motionReduced()) {
     pieces.forEach(([text], i) => (spans[i].textContent = text));
     return;
   }
@@ -132,6 +138,11 @@ function typeTerminal(rows) {
   let piece = 0, char = 0;
   const tick = () => {
     if (piece >= pieces.length) return;
+    // Animations switched off part-way through: show the rest straight away
+    if (motionReduced()) {
+      pieces.forEach(([text], i) => i >= piece && (spans[i].textContent = text));
+      return;
+    }
     const text = pieces[piece][0];
     spans[piece].textContent = text.slice(0, ++char);
     const justTyped = text[char - 1];
