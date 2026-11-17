@@ -24,6 +24,9 @@ function renderDetails(c) {
   document.getElementById("logo-last").textContent = parts.length > 1 ? `.${parts.at(-1)[0].toUpperCase()}` : "";
   document.getElementById("footer-name").textContent = c.name || "";
 
+  // Only show References in the menu once at least one has been added
+  document.querySelector('.nav-links a[href="/#references"]').parentElement.hidden = !(c.references || []).length;
+
   if (!section) return notFound();
   const back = document.getElementById("back");
   back.href = `/#${sectionKey}`;

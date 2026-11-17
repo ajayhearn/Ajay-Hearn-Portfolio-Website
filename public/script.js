@@ -95,6 +95,13 @@ function render(c) {
     ].filter(Boolean)
   );
 
+  // Number the visible sections 01, 02, 03... so hidden ones (e.g. References with none added) are skipped
+  let sectionNumber = 0;
+  document.querySelectorAll("main > section.section").forEach((section) => {
+    const num = section.querySelector(".section-num");
+    if (num && !section.hidden) num.textContent = `${String(++sectionNumber).padStart(2, "0")}.`;
+  });
+
   typeTerminal(c.terminal || []);
   setUpReveal();
 }
