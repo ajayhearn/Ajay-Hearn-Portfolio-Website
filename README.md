@@ -4,6 +4,8 @@ A portfolio site with a built-in admin panel, hosted on Cloudflare Pages.
 
 Live site: https://ajay-hearn-portfolio.pages.dev · Admin panel: https://ajay-hearn-portfolio.pages.dev/admin
 
+**How to look after the site yourself: see [MAINTAINING.md](MAINTAINING.md).**
+
 ## How it works
 
 | Part | What it does |
