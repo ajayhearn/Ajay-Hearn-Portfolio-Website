@@ -266,6 +266,36 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 1.5rem; }
 .cert { display: flex; gap: 1rem; align-items: center; }
 .cert span { font-size: 1.8rem; }
 .cert small { display: block; color: var(--muted); }
+/* Uploaded certificate image sits where the emoji icon goes */
+img.cert-icon { width: 2.6rem; height: 2.6rem; flex-shrink: 0; object-fit: contain; border-radius: 8px; }
+
+/* ========== Read more ========== */
+.read-more {
+  display: inline-block;
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  align-self: flex-start;
+}
+.read-more:hover { text-decoration: none; transform: translateX(3px); }
+.read-more { transition: transform 0.2s; }
+
+/* ========== References ========== */
+.references-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem; }
+.reference { margin: 0; display: flex; flex-direction: column; gap: 1rem; }
+.reference blockquote { color: var(--muted); font-style: italic; white-space: pre-line; flex: 1; }
+.reference figcaption { border-left: 3px solid var(--accent-2); padding-left: 0.8rem; }
+.reference figcaption small { display: block; color: var(--muted); }
+
+/* ========== Details ("Read more") page ========== */
+.details-page { max-width: 820px; padding-top: 3rem; padding-bottom: 4rem; }
+.back-link { display: inline-block; margin-bottom: 1.5rem; font-weight: 600; }
+.details-card h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.2; margin: 0.3rem 0 1rem; }
+.details-card .eyebrow { font-size: 0.85rem; }
+.details-card .summary { color: var(--muted); font-size: 1.05rem; margin-bottom: 1.5rem; white-space: pre-line; }
+.details-card .body { white-space: pre-line; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border); }
+.details-card .gallery { margin: 1.5rem 0; }
+.details-card .project-links { margin-top: 1.5rem; }
 
 /* ========== Contact ========== */
 .contact { text-align: center; padding-bottom: 5rem; }

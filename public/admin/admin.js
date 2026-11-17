@@ -52,6 +52,8 @@ const SCHEMA = [
       { key: "github", label: "GitHub link", type: "url" },
       { key: "live", label: "Live demo link", type: "url" },
       { key: "images", label: "Images", type: "images" },
+      { key: "readMore", label: "Show a “Read more” button linking to its own page", type: "toggle" },
+      { key: "details", label: "Read more page: full write-up", type: "textarea", tall: true, showIf: "readMore" },
     ],
   },
   {
@@ -64,6 +66,8 @@ const SCHEMA = [
       { key: "title", label: "Title (e.g. Role · Company)" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "images", label: "Images", type: "images" },
+      { key: "readMore", label: "Show a “Read more” button linking to its own page", type: "toggle" },
+      { key: "details", label: "Read more page: full write-up", type: "textarea", tall: true, showIf: "readMore" },
     ],
   },
   {
@@ -76,15 +80,31 @@ const SCHEMA = [
       { key: "title", label: "Title (e.g. Qualification · School)" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "images", label: "Images", type: "images" },
+      { key: "readMore", label: "Show a “Read more” button linking to its own page", type: "toggle" },
+      { key: "details", label: "Read more page: full write-up", type: "textarea", tall: true, showIf: "readMore" },
     ],
   },
   {
     title: "Certifications",
     listKey: "certifications",
     itemName: "certification",
+    hint: "Each certification shows an emoji icon. Upload an image (e.g. the badge or logo) to show it in the icon's place instead.",
     fields: [
+      { key: "icon", label: "Emoji", short: true, placeholder: "🏅" },
       { key: "title", label: "Certification" },
       { key: "detail", label: "Detail (e.g. year or 'In progress')" },
+      { key: "images", label: "Icon image (replaces the emoji)", type: "images", max: 1 },
+    ],
+  },
+  {
+    title: "References",
+    hint: "Shown as quote cards. The section is hidden on the site while this list is empty. Avoid putting referees' phone numbers or emails here, because the site is public.",
+    listKey: "references",
+    itemName: "reference",
+    fields: [
+      { key: "name", label: "Name" },
+      { key: "role", label: "Role and organisation (e.g. Placement Manager · NHS)" },
+      { key: "quote", label: "What they said", type: "textarea" },
     ],
   },
   {
@@ -185,6 +205,7 @@ async function uploadImage(file) {
 
 function imagesField(field, obj, key) {
   const imgs = (obj[key] ||= []);
+  const max = field.max || MAX_IMAGES;
 
   const thumbs = imgs.map((img, i) =>
     el("div", { class: "thumb" }, [
@@ -212,7 +233,7 @@ function imagesField(field, obj, key) {
   );
 
   let adder = null;
-  if (imgs.length < MAX_IMAGES) {
+  if (imgs.length < max) {
     const fileInput = el("input", { type: "file", accept: "image/jpeg,image/png,image/webp,image/gif", hidden: true });
     const button = el("button", { type: "button", class: "btn small ghost", text: "+ Add image", onclick: () => fileInput.click() });
     fileInput.addEventListener("change", async () => {
@@ -234,8 +255,8 @@ function imagesField(field, obj, key) {
   }
 
   return el("div", { class: "field" }, [
-    el("span", { text: `${field.label} (${imgs.length}/${MAX_IMAGES})` }),
-    el("div", { class: "thumbs" }, [...thumbs, adder]),
+    el("span", { text: `${field.label} (${imgs.length}/${max})` }),
+    el("div", { class: `thumbs${max === 1 ? " single" : ""}` }, [...thumbs, adder]),
     el("small", { text: "Images appear on the site after you click Save changes." }),
   ]);
 }
@@ -245,17 +266,26 @@ function imagesField(field, obj, key) {
 function fieldInput(field, obj, key) {
   const type = field.type || "text";
   if (type === "images") return imagesField(field, obj, key);
+  if (type === "toggle") {
+    const box = el("input", { type: "checkbox", checked: obj[key] === true });
+    box.addEventListener("change", () => {
+      obj[key] = box.checked;
+      markDirty();
+      build(); // show or hide the fields that depend on this switch
+    });
+    return el("label", { class: "field toggle" }, [box, el("span", { text: field.label })]);
+  }
   const current = obj[key];
   const isTags = type === "tags";
   const value = isTags ? (current || []).join(", ") : current || "";
 
   const input =
     type === "textarea"
-      ? el("textarea", { value })
+      ? el("textarea", { value, className: field.tall ? "tall" : "" })
       : el("input", {
           type: type === "url" ? "url" : type === "email" ? "email" : "text",
           value,
-          placeholder: type === "url" ? "https://…" : "",
+          placeholder: field.placeholder || (type === "url" ? "https://…" : ""),
         });
 
   input.addEventListener("input", () => {
@@ -272,7 +302,8 @@ function fieldInput(field, obj, key) {
   ]);
 }
 
-function fieldsFor(fields, obj) {
+function fieldsFor(allFields, obj) {
+  const fields = allFields.filter((f) => !f.showIf || obj[f.showIf] === true);
   const shortFields = fields.filter((f) => f.short);
   const rest = fields.filter((f) => !f.short);
   const nodes = [];
@@ -289,7 +320,7 @@ function fieldsFor(fields, obj) {
 function emptyItem(section) {
   if (section.plainList) return "";
   const item = {};
-  section.fields.forEach((f) => (item[f.key] = f.type === "tags" || f.type === "images" ? [] : ""));
+  section.fields.forEach((f) => (item[f.key] = f.type === "tags" || f.type === "images" ? [] : f.type === "toggle" ? false : ""));
   return item;
 }
 

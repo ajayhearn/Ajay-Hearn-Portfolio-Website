@@ -112,3 +112,9 @@ details.section > summary {
 .thumb img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 6px; }
 .thumb input { font: inherit; font-size: 0.82rem; padding: 0.4rem 0.5rem; border: 1px solid #bcd3ea; border-radius: 6px; }
 .thumb.add { align-items: center; justify-content: center; min-height: 120px; border-style: dashed; background: #f8fbff; }
+
+.field.toggle { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
+.field.toggle > span { margin: 0; }
+.field.toggle input { width: 1.15rem; height: 1.15rem; accent-color: #0b74d6; }
+.field textarea.tall { min-height: 220px; }
+.thumbs.single { grid-template-columns: minmax(0, 220px); }

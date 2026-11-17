@@ -1,60 +1,4 @@
-// ---------- Theme toggle ----------
-const root = document.documentElement;
-document.getElementById("themeToggle").addEventListener("click", () => {
-  const next = root.dataset.theme === "dark" ? "light" : "dark";
-  root.dataset.theme = next;
-  localStorage.setItem("theme", next);
-});
-
-document.getElementById("year").textContent = new Date().getFullYear();
-
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-// ---------- Helpers ----------
-// Build an element. Text is always set with textContent, so saved content can never inject HTML.
-function el(tag, props = {}, children = []) {
-  const node = document.createElement(tag);
-  for (const [key, value] of Object.entries(props)) {
-    if (key === "text") node.textContent = value;
-    else if (key === "class") node.className = value;
-    else node.setAttribute(key, value);
-  }
-  for (const child of children) if (child) node.append(child);
-  return node;
-}
-
-// Only allow normal web, email and same-site links
-function safeUrl(url) {
-  if (!url) return "";
-  try {
-    const parsed = new URL(url, window.location.origin);
-    return ["http:", "https:", "mailto:"].includes(parsed.protocol) ? parsed.href : "";
-  } catch {
-    return "";
-  }
-}
-
-function link(text, url, extra = {}) {
-  const href = safeUrl(url);
-  if (!href) return null;
-  const external = href.startsWith("http") && !href.startsWith(window.location.origin);
-  return el("a", { href, text, ...(external ? { target: "_blank", rel: "noopener" } : {}), ...extra });
-}
-
-// Up to 2 images side by side; clicking one opens it full size
-function gallery(images) {
-  const imgs = (images || []).filter((img) => /^\/api\/images\/[a-f0-9-]+$/.test(img.src));
-  if (!imgs.length) return null;
-  return el(
-    "div",
-    { class: `gallery count-${imgs.length}` },
-    imgs.map((img) =>
-      el("a", { href: img.src, target: "_blank", rel: "noopener" }, [
-        el("img", { src: img.src, alt: img.alt || "", loading: "lazy" }),
-      ])
-    )
-  );
-}
+// Home page. Shared helpers (el, link, gallery, loadContent...) are in common.js
 
 // ---------- Rendering ----------
 function render(c) {
@@ -97,29 +41,46 @@ function render(c) {
         el("h3", { text: p.title }),
         el("p", { text: p.description }),
         el("ul", { class: "tags" }, (p.tags || []).map((t) => el("li", { text: t }))),
+        readMoreLink("projects", p),
       ])
     )
   );
 
-  const timeline = (entries) =>
+  const timeline = (section, entries) =>
     (entries || []).map((e) =>
       el("li", { class: "card" }, [
         el("span", { class: "when", text: e.when }),
         el("h3", { text: e.title }),
         el("p", { text: e.description }),
         gallery(e.images),
+        readMoreLink(section, e),
       ])
     );
-  document.getElementById("experience-list").replaceChildren(...timeline(c.experience));
-  document.getElementById("education-list").replaceChildren(...timeline(c.education));
+  document.getElementById("experience-list").replaceChildren(...timeline("experience", c.experience));
+  document.getElementById("education-list").replaceChildren(...timeline("education", c.education));
 
   const certs = c.certifications || [];
   document.getElementById("certs-heading").hidden = certs.length === 0;
   document.getElementById("certs-list").replaceChildren(
     ...certs.map((cert) =>
       el("div", { class: "card cert" }, [
-        el("span", { text: "🏅" }),
+        // An uploaded image takes the icon's place; otherwise show the chosen emoji
+        isUploadedImage(cert.images?.[0])
+          ? el("img", { class: "cert-icon", src: cert.images[0].src, alt: cert.images[0].alt || "", loading: "lazy" })
+          : el("span", { class: "cert-icon", text: cert.icon || "🏅" }),
         el("div", {}, [el("strong", { text: cert.title }), el("small", { text: cert.detail })]),
+      ])
+    )
+  );
+
+  const refs = c.references || [];
+  document.getElementById("references").hidden = refs.length === 0;
+  document.querySelector('.nav-links a[href="#references"]').parentElement.hidden = refs.length === 0;
+  document.getElementById("references-list").replaceChildren(
+    ...refs.map((r) =>
+      el("figure", { class: "card reference" }, [
+        r.quote ? el("blockquote", { text: `“${r.quote}”` }) : null,
+        el("figcaption", {}, [el("strong", { text: r.name }), el("small", { text: r.role })]),
       ])
     )
   );
@@ -191,21 +152,6 @@ function setUpReveal() {
     t.classList.add("reveal");
     observer.observe(t);
   });
-}
-
-// ---------- Load content ----------
-// /api/content returns what you saved in the admin panel. If that isn't available
-// (for example when opening the file without the Cloudflare server), fall back to content.json.
-async function loadContent() {
-  for (const url of ["/api/content", "/content.json"]) {
-    try {
-      const res = await fetch(url, { cache: "no-store" });
-      if (res.ok) return await res.json();
-    } catch {
-      /* try the next source */
-    }
-  }
-  throw new Error("Could not load content");
 }
 
 loadContent()
