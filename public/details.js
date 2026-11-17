@@ -37,7 +37,7 @@ function renderDetails(c) {
 
   document.title = `${item.title} | ${c.name || "Portfolio"}`;
   const isProject = sectionKey === "projects";
-  const eyebrow = isProject ? `${item.icon || "📦"} ${section.label}` : `${section.label} · ${item.when || ""}`;
+  const eyebrow = [section.label, item.when, item.location].filter(Boolean).join(" · ");
 
   box.replaceChildren(
     ...[

@@ -543,3 +543,7 @@ html[data-links="on"] a:not(.btn):not(.skip-link) { text-decoration: underline; 
 /* Project cards: images stack full width, so each is the same size as a single image on other projects */
 .project .gallery.count-2 { grid-template-columns: 1fr; }
 .project .when { display: block; margin-bottom: 0.3rem; }
+
+/* Date and location line on experience/education cards */
+.timeline .when { margin: 0; color: var(--accent); }
+.timeline .location { white-space: nowrap; }

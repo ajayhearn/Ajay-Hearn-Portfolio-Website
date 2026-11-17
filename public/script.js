@@ -56,7 +56,7 @@ function render(c) {
   const timeline = (section, entries) =>
     (entries || []).map((e) =>
       el("li", { class: "card" }, [
-        el("span", { class: "when", text: e.when }),
+        timelineMeta(e),
         el("h3", { text: e.title }),
         el("p", { text: e.description }),
         gallery(e.images),

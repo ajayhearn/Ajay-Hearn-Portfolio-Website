@@ -47,6 +47,7 @@ const SCHEMA = [
     itemName: "education entry",
     fields: [
       { key: "when", label: "Dates" },
+      { key: "location", label: "Location (e.g. Exeter, Devon)" },
       { key: "title", label: "Title (e.g. Qualification · School)" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "images", label: "Images", type: "images" },
@@ -73,6 +74,7 @@ const SCHEMA = [
     itemName: "experience entry",
     fields: [
       { key: "when", label: "Dates" },
+      { key: "location", label: "Location (e.g. Exeter, Devon)" },
       { key: "title", label: "Title (e.g. Role · Company)" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "images", label: "Images", type: "images", max: 6 },

@@ -66,6 +66,20 @@ function gallery(images) {
   );
 }
 
+// The small line above an experience/education title: "Sep 2025 - Jun 2027 · 📍 Exeter, Devon"
+function timelineMeta(item) {
+  if (!item.when && !item.location) return null;
+  return el("p", { class: "when" }, [
+    item.when ? document.createTextNode(item.when) : null,
+    item.when && item.location ? el("span", { class: "meta-sep", "aria-hidden": "true", text: " · " }) : null,
+    item.location ? el("span", { class: "location" }, [
+      el("span", { "aria-hidden": "true", text: "📍 " }),
+      srOnly(item.when ? ", Location: " : "Location: "),
+      document.createTextNode(item.location),
+    ]) : null,
+  ]);
+}
+
 // Link to an item's own page, only when "Read more" is switched on for it
 function readMoreLink(section, item) {
   if (!item.readMore || !item.id) return null;
