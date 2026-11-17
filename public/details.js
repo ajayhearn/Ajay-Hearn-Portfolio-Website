@@ -42,7 +42,10 @@ function renderDetails(c) {
   box.replaceChildren(
     ...[
       isProject
-        ? el("p", { class: "eyebrow" }, [el("span", { "aria-hidden": "true", text: `${item.icon || "📦"} ` }), document.createTextNode(section.label)])
+        ? el("p", { class: "eyebrow" }, [
+            el("span", { "aria-hidden": "true", text: `${item.icon || "📦"} ` }),
+            document.createTextNode(item.when ? `${section.label} · ${item.when}` : section.label),
+          ])
         : el("p", { class: "eyebrow", text: eyebrow }),
       el("h1", { text: item.title }),
       item.description ? el("p", { class: "summary", text: item.description }) : null,

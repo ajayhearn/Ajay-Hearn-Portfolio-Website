@@ -44,6 +44,7 @@ function render(c) {
           ]),
         ]),
         gallery(p.images),
+        p.when ? el("span", { class: "when", text: p.when }) : null,
         el("h3", { text: p.title }),
         el("p", { text: p.description }),
         el("ul", { class: "tags" }, (p.tags || []).map((t) => el("li", { text: t }))),
