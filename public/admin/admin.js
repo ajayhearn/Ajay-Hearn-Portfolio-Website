@@ -160,10 +160,11 @@ function el(tag, props = {}, children = []) {
 
 // ---------- Images ----------
 const MAX_IMAGES = 2;
-const MAX_IMAGE_SIDE = 1600; // pixels; big photos are shrunk before upload
+const MAX_IMAGE_SIDE = 2400; // pixels; only bigger photos are shrunk before upload
+const KEEP_ORIGINAL_BYTES = 3 * 1024 * 1024; // photos already this small and sized are uploaded untouched
 
 function canvasToBlob(canvas, type) {
-  return new Promise((resolve) => canvas.toBlob(resolve, type, 0.85));
+  return new Promise((resolve) => canvas.toBlob(resolve, type, 0.92));
 }
 
 // Shrink and compress a photo in the browser so uploads are small and fast
@@ -174,6 +175,8 @@ async function prepareImage(file) {
   if (file.type === "image/gif") return file; // keep GIF animations as they are
 
   const bitmap = await createImageBitmap(file);
+  // Already a sensible size: upload the original so there's no quality loss at all
+  if (Math.max(bitmap.width, bitmap.height) <= MAX_IMAGE_SIDE && file.size <= KEEP_ORIGINAL_BYTES) return file;
   const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(bitmap.width * scale);

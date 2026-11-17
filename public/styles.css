@@ -251,12 +251,19 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 1.5rem; }
 /* ========== Image galleries (projects, experience, education) ========== */
 .gallery { display: grid; gap: 0.6rem; margin: 0.4rem 0 1rem; }
 .gallery.count-2 { grid-template-columns: 1fr 1fr; }
-.timeline .gallery { margin: 1rem 0 0; max-width: 560px; }
-/* 3 to 6 images: a grid of 3 across (2 across on phones) */
+/* Project cards: 3 to 6 images in a grid of 3 */
 .gallery.count-3, .gallery.count-4, .gallery.count-5, .gallery.count-6 { grid-template-columns: repeat(3, 1fr); }
-.timeline .gallery.count-3, .timeline .gallery.count-4, .timeline .gallery.count-5, .timeline .gallery.count-6 { max-width: 760px; }
+
+/* Experience, Education and Read more pages: big, uncropped images, 2 across (1 across on phones) */
+/* Every tile is the same shape; the whole photo fits inside it (nothing is cut off) */
+.timeline .gallery, .details-card .gallery { grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+.timeline .gallery { margin: 1.2rem 0 0; }
+.timeline .gallery.count-1, .details-card .gallery.count-1 { grid-template-columns: minmax(0, 720px); }
+.timeline .gallery a, .details-card .gallery a { background: rgba(127, 140, 160, 0.1); }
+.timeline .gallery img, .details-card .gallery img { aspect-ratio: 4 / 3; object-fit: contain; }
 @media (max-width: 600px) {
   .gallery.count-3, .gallery.count-4, .gallery.count-5, .gallery.count-6 { grid-template-columns: 1fr 1fr; }
+  .timeline .gallery, .details-card .gallery { grid-template-columns: 1fr; }
 }
 .gallery a { display: block; border-radius: 10px; overflow: hidden; border: 1px solid var(--card-border); }
 .gallery img {
