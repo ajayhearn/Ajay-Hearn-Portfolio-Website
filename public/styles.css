@@ -247,7 +247,7 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 1.5rem; }
   background: var(--accent);
   border: 3px solid var(--sky-bottom);
 }
-.when { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; color: var(--accent); }
+.when { font-family: "Inter", system-ui, sans-serif; font-size: 0.8rem; color: var(--accent); }
 .timeline h3 { margin: 0.2rem 0 0.4rem; font-size: 1.1rem; }
 .timeline p { color: var(--muted); }
 
