@@ -1,5 +1,17 @@
 // Home page. Shared helpers (el, link, gallery, loadContent...) are in common.js
 
+// Reloading the page always starts at the top, even if you'd scrolled down or clicked a menu link.
+// (Following a link like /#projects from another page still jumps to that section.)
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+const isReload = performance.getEntriesByType("navigation")[0]?.type === "reload";
+function goToTopOnReload() {
+  if (!isReload) return;
+  if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  window.scrollTo(0, 0);
+}
+goToTopOnReload();
+window.addEventListener("load", goToTopOnReload);
+
 // ---------- Rendering ----------
 function render(c) {
   // Logo: "Ajay Hearn" -> "Ajay" + ".H"
@@ -111,6 +123,8 @@ function render(c) {
   });
 
   typeTerminal(c.terminal || []);
+  // Arrived from a link like /#projects: jump again now that the sections are filled in
+  if (!isReload && location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
   setUpReveal();
 }
 

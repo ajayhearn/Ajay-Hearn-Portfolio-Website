@@ -23,9 +23,6 @@ function renderDetails(c) {
 
 
   if (!section) return notFound();
-  const back = document.getElementById("back");
-  back.href = `/#${sectionKey}`;
-  back.textContent = `← ${section.back}`;
 
   const item = (c[sectionKey] || []).find((i) => i.id === itemId);
   if (!item || !item.readMore) return notFound();

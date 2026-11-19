@@ -601,3 +601,7 @@ html[data-font="on"] .arch { font-family: "Atkinson Hyperlegible", Verdana, sans
 .footer a { color: var(--accent-on-sky); }
 /* Tags on the How I built this page sit lower on the sky, so they need a slightly darker orange in light mode */
 html:not([data-theme="dark"]):not([data-contrast="on"]) .how-tags { color: #8f4700; }
+
+/* "Hi, I'm" uses the same font as the name below it */
+.hero .eyebrow { font-family: "Inter", system-ui, sans-serif; font-weight: 600; }
+.logo-cloud { font-size: 0.9em; }
