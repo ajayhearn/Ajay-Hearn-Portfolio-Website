@@ -141,7 +141,7 @@ ul { list-style: none; }
 main { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 2rem); }
 .section { padding: 5rem 0 2rem; }
 h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 1.5rem; }
-.section-num { font-family: "JetBrains Mono", monospace; color: var(--accent-2); font-size: 0.8em; }
+.section-num { font-family: "Inter", system-ui, sans-serif; color: var(--accent-2); font-size: 0.8em; }
 .sub-heading { margin: 2.5rem 0 1rem; }
 
 .card {
