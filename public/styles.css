@@ -221,7 +221,7 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 1.5rem; }
 .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem; }
 .project { display: flex; flex-direction: column; }
 .project:hover { transform: translateY(-6px); }
-.project-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.project-head { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; }
 .project-icon { font-size: 2rem; }
 .project-links { display: flex; gap: 0.9rem; font-size: 0.9rem; font-weight: 600; }
 .project h3 { margin-bottom: 0.5rem; }

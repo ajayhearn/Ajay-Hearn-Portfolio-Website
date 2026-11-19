@@ -12,6 +12,15 @@ function goToTopOnReload() {
 goToTopOnReload();
 window.addEventListener("load", goToTopOnReload);
 
+// GitHub / Live links in the top-right of a project card (nothing when neither is filled in)
+function projectLinks(p) {
+  const links = [
+    link("GitHub", p.github, { "aria-label": `${p.title}: GitHub (opens in a new tab)` }),
+    link("Live", p.live, { icon: "↗", after: true, "aria-label": `${p.title}: live demo (opens in a new tab)` }),
+  ].filter(Boolean);
+  return links.length ? el("div", { class: "project-head" }, [el("div", { class: "project-links" }, links)]) : null;
+}
+
 // ---------- Rendering ----------
 function render(c) {
   // Logo: "Ajay Hearn" -> "Ajay" + ".H"
@@ -48,13 +57,7 @@ function render(c) {
   document.getElementById("projects-list").replaceChildren(
     ...(c.projects || []).map((p) =>
       el("article", { class: "card project" }, [
-        el("div", { class: "project-head" }, [
-          el("span", { class: "project-icon", "aria-hidden": "true", text: p.icon || "📦" }),
-          el("div", { class: "project-links" }, [
-            link("GitHub", p.github, { "aria-label": `${p.title}: GitHub (opens in a new tab)` }),
-            link("Live", p.live, { icon: "↗", after: true, "aria-label": `${p.title}: live demo (opens in a new tab)` }),
-          ]),
-        ]),
+        projectLinks(p),
         gallery(p.images),
         p.when ? el("span", { class: "when", text: p.when }) : null,
         el("h3", { text: p.title }),

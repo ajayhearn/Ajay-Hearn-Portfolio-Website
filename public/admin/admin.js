@@ -87,7 +87,6 @@ const SCHEMA = [
     listKey: "projects",
     itemName: "project",
     fields: [
-      { key: "icon", label: "Emoji", short: true },
       { key: "title", label: "Project name" },
       { key: "when", label: "Dates (e.g. Jan 2026 - Mar 2026)" },
       { key: "description", label: "Description", type: "textarea" },
