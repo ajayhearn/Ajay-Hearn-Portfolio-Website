@@ -97,7 +97,7 @@ function render(c) {
     ...[
       ct.email && link("Email me", `mailto:${ct.email}`, { icon: "✉️", class: "btn primary" }),
       link("LinkedIn", ct.linkedin, { class: "btn ghost" }),
-      link("Contact form", "/contact", { class: "btn ghost" }),
+      link("Contact", "/contact", { class: "btn ghost" }),
       link("GitHub", ct.github, { class: "btn ghost" }),
       link("Download CV", ct.cv, { class: "btn ghost" }),
     ].filter(Boolean)
