@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How I built this site | Ajay Hearn</title>
+  <meta name="description" content="How Ajay Hearn built his portfolio as a serverless app on Cloudflare Pages, Pages Functions and Workers KV." />
+  <link rel="canonical" href="https://ajay-hearn-portfolio.pages.dev/how-its-built" />
+  <!-- Link previews (LinkedIn, WhatsApp, Discord, Teams, iMessage, X...) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Ajay Hearn" />
+  <meta property="og:title" content="How I built this site | Ajay Hearn" />
+  <meta property="og:description" content="How Ajay Hearn built his portfolio as a serverless app on Cloudflare Pages, Pages Functions and Workers KV." />
+  <meta property="og:url" content="https://ajay-hearn-portfolio.pages.dev/how-its-built" />
+  <meta property="og:image" content="https://ajay-hearn-portfolio.pages.dev/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Ajay Hearn: T Level Digital Support and Security student with Amazon (IMDb) and NHS industry placements, applying for Solutions Architect degree apprenticeships." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/prefs.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <noscript><p class="noscript">This site needs JavaScript turned on to show its content.</p></noscript>
+  <div class="sky" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+    <div class="cloud c4"></div>
+    <div class="cloud c5"></div>
+  </div>
+
+  <header class="nav">
+    <a href="/" class="logo" aria-label="Ajay, home page"><span id="logo-first">Ajay</span></a>
+    <nav aria-label="Main">
+      <ul class="nav-links" id="site-menu">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#skills">Skills</a></li>
+        <li><a href="/#education">Education</a></li>
+        <li><a href="/#experience">Experience</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li hidden><a href="/#references">References</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-controls">
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <!-- The accessibility button and its settings panel are added here by common.js -->
+      <button class="theme-toggle icon-btn" id="themeToggle" aria-pressed="false" aria-label="Dark mode">
+        <span class="icon-sun" aria-hidden="true">☀️</span><span class="icon-moon" aria-hidden="true">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="details-page wide" id="main" tabindex="-1">
+    <a class="back-link" href="/">&larr; Back to the home page</a>
+    <article class="card details-card how">
+      <p class="eyebrow">Behind the scenes</p>
+      <h1>How I built this site</h1>
+      <p class="summary">This portfolio is a small serverless web app on Cloudflare. I wrote it in plain HTML, CSS and JavaScript with no framework, so I can explain every part of it. It runs on Cloudflare's free plan.</p>
+
+      <figure class="arch-figure">
+        <div class="arch-scroll">
+        <svg class="arch" viewBox="0 0 940 612" role="img" aria-labelledby="arch-title arch-desc">
+          <title id="arch-title">Architecture of this website</title>
+          <desc id="arch-desc">Visitors and the admin panel talk to Cloudflare over HTTPS. Cloudflare Pages serves the files and Pages Functions run the API. The functions read and write Workers KV, read encrypted secrets, and send contact form messages to a Discord channel through a webhook. I deploy from my Mac with Wrangler and push the code to GitHub.</desc>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker>
+            <marker id="arrow-back" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="head" d="M10 0 L0 5 L10 10 z"/></marker>
+          </defs>
+          <rect class="group" x="260" y="16" width="420" height="472" rx="16"/>
+          <text class="g" x="470" y="44">Cloudflare (free plan)</text>
+          <rect class="node" x="290" y="62" width="360" height="78" rx="12"/>
+          <text class="t" x="470.0" y="90">Cloudflare Pages</text>
+          <text class="s" x="470.0" y="112">HTML, CSS and JavaScript files</text>
+          <rect class="node" x="290" y="176" width="360" height="118" rx="12"/>
+          <text class="t" x="470.0" y="204">Pages Functions (/api)</text>
+          <text class="s" x="470.0" y="226">public: page content, images</text>
+          <text class="s" x="470.0" y="244">admin: log in, save, upload images</text>
+          <text class="s" x="470.0" y="262">contact form</text>
+          <rect class="node" x="290" y="342" width="170" height="122" rx="12"/>
+          <text class="t" x="375.0" y="370">Workers KV</text>
+          <text class="s" x="375.0" y="392">site content</text>
+          <text class="s" x="375.0" y="410">uploaded images</text>
+          <text class="s" x="375.0" y="428">rate-limit counters</text>
+          <rect class="node" x="480" y="342" width="170" height="122" rx="12"/>
+          <text class="t" x="565.0" y="370">Encrypted secrets</text>
+          <text class="s" x="565.0" y="392">admin password</text>
+          <text class="s" x="565.0" y="410">session signing key</text>
+          <text class="s" x="565.0" y="428">Discord webhook</text>
+          <rect class="node" x="20" y="52" width="200" height="86" rx="12"/>
+          <text class="t" x="120.0" y="80">Visitor's browser</text>
+          <text class="s" x="120.0" y="102">loads the page, then</text>
+          <text class="s" x="120.0" y="120">the content from /api</text>
+          <rect class="node" x="20" y="196" width="200" height="86" rx="12"/>
+          <text class="t" x="120.0" y="224">Me, at /admin</text>
+          <text class="s" x="120.0" y="246">password login</text>
+          <rect class="node" x="20" y="400" width="200" height="86" rx="12"/>
+          <text class="t" x="120.0" y="428">My Mac</text>
+          <text class="s" x="120.0" y="450">Wrangler CLI</text>
+          <rect class="node" x="720" y="192" width="200" height="86" rx="12"/>
+          <text class="t" x="820.0" y="220">Discord channel</text>
+          <text class="s" x="820.0" y="242">contact form messages</text>
+          <rect class="node" x="260" y="530" width="200" height="70" rx="12"/>
+          <text class="t" x="360.0" y="558">GitHub</text>
+          <text class="s" x="360.0" y="580">code and history</text>
+          <path class="flow" d="M220 82 L286 96" marker-end="url(#arrow)"/>
+          <text class="l" x="248" y="76">HTTPS</text>
+          <path class="flow" d="M220 116 L286 206" marker-end="url(#arrow)"/>
+          <path class="flow" d="M220 239 L286 239" marker-end="url(#arrow)"/>
+          <text class="l" x="252" y="232">HTTPS</text>
+          <path class="flow" d="M375 297 L375 338" marker-end="url(#arrow)" marker-start="url(#arrow-back)"/>
+          <path class="flow" d="M565 338 L565 299" marker-end="url(#arrow)"/>
+          <path class="flow" d="M650 235 L716 235" marker-end="url(#arrow)"/>
+          <text class="l" x="683" y="227">webhook</text>
+          <path class="flow" d="M220 443 L256 443" marker-end="url(#arrow)"/>
+          <text class="l" x="238" y="434">deploy</text>
+          <path class="flow" d="M120 486 L120 565 L256 565" marker-end="url(#arrow)"/>
+          <text class="l" x="188" y="557">git push</text>
+        </svg>
+        </div>
+        <figcaption>How the parts connect. Arrows show which way requests go.</figcaption>
+      </figure>
+
+      <h2>What happens when someone visits</h2>
+      <ol>
+        <li>The browser asks Cloudflare for the page. <strong>Cloudflare Pages</strong> sends the HTML, CSS and JavaScript from its global network, so it loads quickly wherever the visitor is.</li>
+        <li>The page's JavaScript then asks for <code>/api/content</code>. A <strong>Pages Function</strong> (a small piece of server code running on Cloudflare) reads my content from <strong>Workers KV</strong>, Cloudflare's key-value database, and returns it as JSON.</li>
+        <li>The JavaScript builds each section from that content. All text is inserted as plain text, never as HTML, so nothing saved in the admin panel can inject code into the page.</li>
+        <li>Images are served from <code>/api/images/&hellip;</code>. Each image has a random ID that never changes, so browsers can cache them for a year.</li>
+      </ol>
+
+      <h2>How I edit the content</h2>
+      <ul>
+        <li>The admin panel at <code>/admin</code> is a form for every section. It means I can update the site from any device without changing code.</li>
+        <li><strong>Login:</strong> my password is stored as an encrypted Cloudflare secret, not in the code. When I log in, the server gives my browser a cookie signed with HMAC-SHA256. It lasts 8 hours, and the browser keeps it out of reach of JavaScript (<code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>).</li>
+        <li><strong>Saving:</strong> the server rebuilds my content from scratch using only the fields it knows about. It also checks lengths and links (only <code>https://</code>), then stores the result in KV. Changes usually reach every Cloudflare location within a minute.</li>
+        <li><strong>Images:</strong> the admin panel shrinks very large photos in the browser before uploading. The server checks each file's first bytes to confirm it really is a JPG, PNG, WebP or GIF, with a 5 MB limit. When I save, images I've removed are deleted from storage.</li>
+      </ul>
+
+      <h2>How the contact form works</h2>
+      <p>The form sends the message to a Pages Function. The function checks it and posts it to a private channel in my Discord server using a <strong>Discord webhook</strong>. The webhook address is kept as an encrypted secret, so visitors never see it. A hidden "honeypot" box catches spam bots, and each connection can send 5 messages an hour. Messages can't ping anyone in the server.</p>
+
+      <h2>Security</h2>
+      <ul>
+        <li>Every admin request is checked by middleware before it runs. Without a valid login cookie, the server refuses it.</li>
+        <li>After 10 wrong passwords, logins from that connection are blocked for 15 minutes.</li>
+        <li>Passwords and cookie signatures are compared in a way that doesn't leak timing information.</li>
+        <li>The admin and API only accept JSON or image uploads, which stops other websites from submitting forms on my behalf.</li>
+        <li>Everything is served over HTTPS, and no secrets are stored in the public GitHub repository.</li>
+      </ul>
+
+      <h2>Accessibility</h2>
+      <ul>
+        <li>The site scores 100 in Google Lighthouse's accessibility check, in light and dark mode, on desktop and mobile.</li>
+        <li>The accessibility menu changes text size and turns on high contrast, an easy-read font (Atkinson Hyperlegible), wider spacing and underlined links. It can also stop animations, and visitors who have turned animations off on their device get that automatically.</li>
+        <li>It works with a keyboard and screen readers. There's a skip link and visible focus outlines, and every image and link has a name screen readers can read out.</li>
+      </ul>
+
+      <h2>How I deploy changes</h2>
+      <ul>
+        <li>I test on my Mac with <code>npm run dev</code>, which runs the same Cloudflare runtime locally.</li>
+        <li>I put changes live with <code>npm run deploy</code>, which uses Wrangler, Cloudflare's command-line tool, to upload the site.</li>
+        <li>The code and its full history are on GitHub. Content I change in the admin panel is stored in KV, separate from the code.</li>
+      </ul>
+
+      <h2>Tools and services</h2>
+      <ul class="tags how-tags">
+        <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Cloudflare Pages</li><li>Pages Functions</li><li>Workers KV</li><li>Wrangler</li><li>Git &amp; GitHub</li><li>Discord webhooks</li><li>Google Fonts</li><li>Lighthouse</li>
+      </ul>
+
+      <p class="source-link"><a href="https://github.com/ajayhearn/Ajay-Hearn-Portfolio-Website">View the code on GitHub</a></p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> <span id="footer-name">Ajay Hearn</span> &middot; <a href="/how-its-built">How I built this site</a></p>
+  </footer>
+
+  <script src="/common.js"></script>
+  <script src="/page.js"></script>
+</body>
+</html>

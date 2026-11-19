@@ -23,6 +23,9 @@ certifications, references, images and links.
 | Settings applied before the page draws (theme, text size...) | `public/prefs.js` |
 | The admin panel's form fields | `public/admin/admin.js` (the `SCHEMA` list at the top) |
 | What the server accepts and saves | `lib/content.js` |
+| The How I built this site page | `public/how-its-built.html` (written by hand; update it if the setup changes) |
+| Contact form page / what it sends | `public/contact.html`, `public/contact.js` / `functions/api/contact.js` |
+| Link preview (title, description, image) | the `og:` tags in each page's `<head>`, and `public/og-image.png` |
 
 Adding a new type of field needs changes in both `admin.js` and `lib/content.js`. If you skip
 `lib/content.js`, the server throws the new field away when you save.
@@ -92,6 +95,13 @@ Do this once:
 - **If Wrangler says you're logged out**, run `npx wrangler login` again.
 - **Update the tools** a couple of times a year with `npm update`. Then run `npm run dev` to check
   everything still works before you deploy.
+
+- **Contact form → Discord.** Messages go to the Discord webhook saved as the `DISCORD_WEBHOOK_URL` secret.
+  To change channel, make a new webhook in Discord (Server Settings → Integrations → Webhooks), then run
+  `npx wrangler pages secret put DISCORD_WEBHOOK_URL --project-name ajay-hearn-portfolio` and `npm run deploy`.
+- **Link previews** don't update from the admin panel. If your headline changes, edit the `og:` tags in
+  `public/index.html` (and remake `public/og-image.png`). LinkedIn caches previews; refresh it at
+  https://www.linkedin.com/post-inspector/ .
 
 ## 5. If something breaks
 

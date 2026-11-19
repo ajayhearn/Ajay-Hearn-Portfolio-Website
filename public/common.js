@@ -104,6 +104,18 @@ async function loadContent() {
   throw new Error("Could not load content");
 }
 
+// Header/footer details that come from the saved content (used by the extra pages)
+function applySiteChrome(c) {
+  const first = (c.name || "").trim().split(/\s+/)[0];
+  const logo = document.getElementById("logo-first");
+  if (logo && first) logo.textContent = first;
+  const footerName = document.getElementById("footer-name");
+  if (footerName) footerName.textContent = c.name || "";
+  // Only show References in the menu once at least one has been added
+  const refs = document.querySelector('.nav-links a[href="/#references"]');
+  if (refs) refs.parentElement.hidden = !(c.references || []).length;
+}
+
 // ---------- Header controls: theme, phone menu, accessibility settings ----------
 function store(key, value) {
   try {

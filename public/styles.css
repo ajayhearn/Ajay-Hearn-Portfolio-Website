@@ -547,3 +547,57 @@ html[data-links="on"] a:not(.btn):not(.skip-link) { text-decoration: underline; 
 /* Date and location line on experience/education cards */
 .timeline .when { margin: 0; color: var(--accent); }
 .timeline .location { white-space: nowrap; }
+
+/* ========== Logo: just the first name ========== */
+.logo { font-size: 1.3rem; }
+
+/* ========== Contact form page ========== */
+.contact-form { display: grid; gap: 1.1rem; max-width: 560px; }
+.form-field { display: grid; gap: 0.4rem; }
+.form-field > span { font-weight: 600; }
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--muted);
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+}
+.form-field textarea { resize: vertical; min-height: 160px; }
+.form-field small { color: var(--muted); font-size: 0.8rem; justify-self: end; }
+.contact-form .btn { justify-self: start; border: 0; cursor: pointer; font: inherit; font-weight: 600; }
+.contact-form .btn:disabled { opacity: 0.6; cursor: default; }
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.form-status { min-height: 1.5em; font-weight: 600; }
+.form-status.error { color: #b3261e; }
+.form-status.ok { color: #1e7d3a; }
+[data-theme="dark"] .form-status.error { color: #ff8a80; }
+[data-theme="dark"] .form-status.ok { color: #7ee787; }
+
+/* ========== How I built this site ========== */
+.details-page.wide { max-width: 1000px; }
+.how h2 { font-size: 1.3rem; margin: 2.2rem 0 0.8rem; }
+.how ol, .how ul:not(.tags) { padding-left: 1.3rem; display: grid; gap: 0.6rem; }
+.how ul:not(.tags) { list-style: disc; }
+.how code { font-family: "JetBrains Mono", monospace; font-size: 0.88em; background: var(--chip-bg); padding: 0.1em 0.35em; border-radius: 5px; }
+.how-tags { margin-top: 0.4rem; }
+.source-link { margin-top: 2rem; font-weight: 600; }
+
+.arch-figure { margin: 2rem 0 0.5rem; }
+.arch-scroll { overflow-x: auto; }
+.arch { display: block; width: 100%; min-width: 680px; height: auto; font-family: "Inter", system-ui, sans-serif; }
+.arch .node { fill: var(--card-bg); stroke: var(--accent); stroke-width: 1.5; }
+.arch .group { fill: var(--chip-bg); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 6; }
+.arch .t { fill: var(--text); font-size: 16px; font-weight: 700; text-anchor: middle; }
+.arch .s { fill: var(--muted); font-size: 13px; text-anchor: middle; }
+.arch .g { fill: var(--accent); font-size: 15px; font-weight: 700; text-anchor: middle; }
+.arch .l { fill: var(--accent-2); font-size: 12px; font-weight: 600; text-anchor: middle; }
+.arch .flow { fill: none; stroke: var(--accent-2); stroke-width: 2; }
+.arch .head { fill: var(--accent-2); }
+.arch-figure figcaption { color: var(--muted); font-size: 0.88rem; margin-top: 0.6rem; }
+html[data-font="on"] .arch { font-family: "Atkinson Hyperlegible", Verdana, sans-serif; }
+.footer a { color: var(--accent-on-sky); }
+/* Tags on the How I built this page sit lower on the sky, so they need a slightly darker orange in light mode */
+html:not([data-theme="dark"]):not([data-contrast="on"]) .how-tags { color: #8f4700; }

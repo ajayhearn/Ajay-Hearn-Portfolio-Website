@@ -13,6 +13,7 @@ Live site: https://ajay-hearn-portfolio.pages.dev · Admin panel: https://ajay-h
 | `public/` | The website (HTML, CSS, JS). Served by **Cloudflare Pages**. |
 | `public/admin/` | The admin panel at `/admin`, a form for editing every section. |
 | `functions/api/content.js` | `GET /api/content` returns the page content (public). |
+| `functions/api/contact.js` | `POST /api/contact` checks a contact form message and posts it to Discord through a webhook (secret `DISCORD_WEBHOOK_URL`). |
 | `functions/api/login.js` | `POST /api/login` checks the admin password and sets a login cookie. |
 | `functions/api/admin/` | Admin-only: load/save content, upload images, log out. `_middleware.js` blocks anyone not logged in. |
 | `functions/api/images/` | `GET /api/images/<id>` serves uploaded images (public). |
