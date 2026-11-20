@@ -23,9 +23,10 @@ certifications, references, images and links.
 | Settings applied before the page draws (theme, text size...) | `public/prefs.js` |
 | The admin panel's form fields | `public/admin/admin.js` (the `SCHEMA` list at the top) |
 | What the server accepts and saves | `lib/content.js` |
+| Which addresses run server code (everything else is served straight from the CDN) | `public/_routes.json` |
 | The How I built this site page | `public/how-its-built.html` (written by hand; update it if the setup changes) |
 | Contact form page / what it sends | `public/contact.html`, `public/contact.js` / `functions/api/contact.js` |
-| Link preview (title, description, image) | the `og:` tags in each page's `<head>`, and `public/og-image.png` |
+| Link preview (title, description, image) | admin panel → Link preview; defaults are the `og:` tags in each page's `<head>` and `public/og-image.png`; `functions/_middleware.js` swaps them in |
 
 Adding a new type of field needs changes in both `admin.js` and `lib/content.js`. If you skip
 `lib/content.js`, the server throws the new field away when you save.
@@ -99,9 +100,12 @@ Do this once:
 - **Contact form → Discord.** Messages go to the Discord webhook saved as the `DISCORD_WEBHOOK_URL` secret.
   To change channel, make a new webhook in Discord (Server Settings → Integrations → Webhooks), then run
   `npx wrangler pages secret put DISCORD_WEBHOOK_URL --project-name ajay-hearn-portfolio` and `npm run deploy`.
-- **Link previews** don't update from the admin panel. If your headline changes, edit the `og:` tags in
-  `public/index.html` (and remake `public/og-image.png`). LinkedIn caches previews; refresh it at
-  https://www.linkedin.com/post-inspector/ .
+- **Link previews** (the card shown when your link is pasted into LinkedIn, Discord, WhatsApp...) are edited in
+  the admin panel's **Link preview** section. `functions/_middleware.js` puts the saved title, description and
+  image into the page before it's sent. Leave the image empty to use `public/og-image.png`, which has the
+  name and headline written on it, so remake or replace it if those change.
+  Apps keep old previews: refresh LinkedIn at https://www.linkedin.com/post-inspector/ , or share the link with
+  something new on the end, like `?v=4`.
 
 ## 5. If something breaks
 

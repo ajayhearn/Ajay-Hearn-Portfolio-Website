@@ -143,6 +143,7 @@
         <li>The admin panel at <code>/admin</code> is a form for every section. It means I can update the site from any device without changing code.</li>
         <li><strong>Login:</strong> my password is stored as an encrypted Cloudflare secret, not in the code. When I log in, the server gives my browser a cookie signed with HMAC-SHA256. It lasts 8 hours, and the browser keeps it out of reach of JavaScript (<code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>).</li>
         <li><strong>Saving:</strong> the server rebuilds my content from scratch using only the fields it knows about. It also checks lengths and links (only <code>https://</code>), then stores the result in KV. Changes usually reach every Cloudflare location within a minute.</li>
+        <li><strong>Link preview:</strong> apps like LinkedIn and Discord read a page's preview tags without running any JavaScript. So a Pages Function middleware fills in the preview title, description and image from KV before each page is sent. I can change the preview from the admin panel without touching the code.</li>
         <li><strong>Images:</strong> the admin panel shrinks very large photos in the browser before uploading. The server checks each file's first bytes to confirm it really is a JPG, PNG, WebP or GIF, with a 5 MB limit. When I save, images I've removed are deleted from storage.</li>
       </ul>
 

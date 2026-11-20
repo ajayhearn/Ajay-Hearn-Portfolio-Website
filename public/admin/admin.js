@@ -120,7 +120,23 @@ const SCHEMA = [
       { key: "cv", label: "CV link (e.g. a Google Drive link, or /cv.pdf)", type: "url" },
     ],
   },
+  {
+    title: "Link preview",
+    hint: "The card shown when your link is pasted into LinkedIn, Discord, WhatsApp, Slack and similar apps. Changes apply as soon as you save, but apps keep old previews for a while (see MAINTAINING.md). The default image has the current name and headline written on it, so upload your own if you change the text.",
+    objectKey: "preview",
+    fields: [
+      { key: "title", label: "Title" },
+      { key: "description", label: "Description", type: "textarea" },
+      { key: "images", label: "Image (JPG or PNG, ideally 1200 × 630 pixels; leave empty for the default)", type: "images", max: 1, jpegOrPng: true },
+    ],
+  },
 ];
+
+// What the site uses when the Link preview boxes are empty (matches the tags in public/index.html)
+const PREVIEW_DEFAULTS = {
+  title: "Ajay Hearn",
+  description: "T Level Digital Support and Security Student | Amazon (IMDb) and NHS Industry Placement Student | Aspiring Solutions Architect Degree Apprentice",
+};
 
 // ---------- State ----------
 let content = null;
@@ -170,7 +186,9 @@ function canvasToBlob(canvas, type) {
 }
 
 // Shrink and compress a photo in the browser so uploads are small and fast
-async function prepareImage(file) {
+async function prepareImage(file, { jpegOrPng = false } = {}) {
+  // Link previews: not every app shows WebP or GIF images, so only allow JPG and PNG
+  if (jpegOrPng && !/^image\/(jpeg|png)$/.test(file.type)) throw new Error("Please choose a JPG or PNG image for the link preview");
   if (!/^image\/(jpeg|png|webp|gif)$/.test(file.type)) {
     throw new Error("Please choose a JPG, PNG, WebP or GIF image");
   }
@@ -186,7 +204,7 @@ async function prepareImage(file) {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
 
-  const webp = await canvasToBlob(canvas, "image/webp");
+  const webp = jpegOrPng ? null : await canvasToBlob(canvas, "image/webp");
   if (webp && webp.type === "image/webp") return webp;
   // Some browsers can't make WebP; use JPEG on a white background instead
   ctx.globalCompositeOperation = "destination-over";
@@ -195,8 +213,8 @@ async function prepareImage(file) {
   return canvasToBlob(canvas, "image/jpeg");
 }
 
-async function uploadImage(file) {
-  const blob = await prepareImage(file);
+async function uploadImage(file, options) {
+  const blob = await prepareImage(file, options);
   if (blob.size > 5 * 1024 * 1024) throw new Error("Image is too large (max 5 MB)");
   const res = await fetch("/api/admin/images", {
     method: "POST",
@@ -239,7 +257,7 @@ function imagesField(field, obj, key) {
 
   let adder = null;
   if (imgs.length < max) {
-    const fileInput = el("input", { type: "file", accept: "image/jpeg,image/png,image/webp,image/gif", hidden: true });
+    const fileInput = el("input", { type: "file", accept: field.jpegOrPng ? "image/jpeg,image/png" : "image/jpeg,image/png,image/webp,image/gif", hidden: true });
     const button = el("button", { type: "button", class: "btn small ghost", text: "+ Add image", onclick: () => fileInput.click() });
     fileInput.addEventListener("change", async () => {
       const file = fileInput.files[0];
@@ -247,7 +265,7 @@ function imagesField(field, obj, key) {
       button.disabled = true;
       button.textContent = "Uploading…";
       try {
-        imgs.push({ src: await uploadImage(file), alt: "" });
+        imgs.push({ src: await uploadImage(file, { jpegOrPng: field.jpegOrPng }), alt: "" });
         markDirty();
         build();
       } catch (err) {
@@ -449,6 +467,11 @@ async function load() {
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
     content = data.content;
+    // Show what the preview currently uses, so the boxes aren't empty the first time
+    content.preview ||= {};
+    content.preview.title ||= PREVIEW_DEFAULTS.title;
+    content.preview.description ||= content.intro || PREVIEW_DEFAULTS.description;
+    content.preview.images ||= [];
     document.getElementById("who").textContent = "Logged in";
     logoutBtn.hidden = false;
     messageEl.hidden = true;
