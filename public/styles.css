@@ -605,3 +605,6 @@ html:not([data-theme="dark"]):not([data-contrast="on"]) .how-tags { color: #8f47
 /* "Hi, I'm" uses the same font as the name below it */
 .hero .eyebrow { font-family: "Inter", system-ui, sans-serif; font-weight: 600; }
 .logo-cloud { font-size: 0.9em; }
+
+/* Read more pages: the "Experience · dates · location" line above the title */
+.details-card .eyebrow { font-family: "Inter", system-ui, sans-serif; font-weight: 600; }
