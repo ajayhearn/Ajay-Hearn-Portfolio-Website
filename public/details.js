@@ -23,13 +23,18 @@ function renderDetails(c) {
 
 
   if (!section) return notFound();
+  const home = sectionKey === "projects" ? "/projects" : "/experience";
+  markCurrentPage(home);
+  const back = document.getElementById("back");
+  back.href = home;
+  back.textContent = sectionKey === "projects" ? "← Back to projects" : "← Back to experience";
 
   const item = (c[sectionKey] || []).find((i) => i.id === itemId);
   if (!item || !item.readMore) return notFound();
 
   document.title = `${item.title} | ${c.name || "Portfolio"}`;
   const isProject = sectionKey === "projects";
-  const eyebrow = [section.label, item.when, item.location].filter(Boolean).join(" · ");
+  const eyebrow = [section.label, item.when].filter(Boolean).join(" · ");
 
   box.replaceChildren(
     ...[

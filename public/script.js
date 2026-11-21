@@ -1,4 +1,13 @@
-// Home page. Shared helpers (el, link, gallery, loadContent...) are in common.js
+// Fills in the Home, Experience, Projects and Contact pages from the saved content.
+// Each page only has some of the sections, so every block checks its element exists first.
+// Shared helpers (el, link, gallery, loadContent...) are in common.js
+
+// Old one-page links (e.g. /#projects) forward to the page the section moved to
+const MOVED = { education: "/experience#education", certifications: "/experience#certifications", experience: "/experience#experience", references: "/experience#references", projects: "/projects", contact: "/contact" };
+if ((location.pathname === "/" || location.pathname === "/index.html") && MOVED[location.hash.slice(1)]) {
+  location.replace(MOVED[location.hash.slice(1)]);
+}
+const $ = (id) => document.getElementById(id);
 
 // Reloading the page always starts at the top, even if you'd scrolled down or clicked a menu link.
 // (Following a link like /#projects from another page still jumps to that section.)
@@ -21,6 +30,70 @@ function projectLinks(p) {
   return links.length ? el("div", { class: "project-head" }, [el("div", { class: "project-links" }, links)]) : null;
 }
 
+// ---------- Skills (like leeam.uk's Stack page) ----------
+// Each group is a box with a title, a short description and a grid of skill tiles (icon + name).
+// The box can be folded away with the arrow; it starts open.
+function skillGroup(g) {
+  const tiles = (g.skills || g.items?.map((name) => ({ name })) || []).filter((sk) => sk.name).map((sk) => {
+    const icon = sk.images?.[0];
+    return el("li", { class: "skill-tile" }, [
+      isUploadedImage(icon) ? el("img", { src: icon.src, alt: "", loading: "lazy", width: "24", height: "24" }) : null,
+      el("span", { text: sk.name }),
+    ]);
+  });
+  const arrow = el("span", { class: "row-arrow" });
+  arrow.innerHTML = CHEVRON;
+  return el("details", { class: "card stack-group", open: "" }, [
+    el("summary", { class: "stack-head" }, [
+      el("span", {}, [el("h3", { text: g.title || "" }), g.description ? el("p", { text: g.description }) : null]),
+      arrow,
+    ]),
+    el("ul", { class: "skill-tiles" }, tiles),
+  ]);
+}
+
+// ---------- Experience / Education rows ----------
+// One line per entry: dates | Role · Company | tags | arrow. Clicking opens the details in place.
+// Uses <details>/<summary>, which browsers make keyboard and screen-reader friendly by default.
+const CHEVRON =
+  '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function entryRow(section, e) {
+  // "Role · Company" -> bold role, grey company
+  const [role, ...rest] = (e.title || "").split(" · ");
+  const org = rest.join(" · ");
+  const tags = [
+    e.highlight ? el("li", { class: "row-badge", text: e.highlight }) : null,
+    ...(e.tags || []).map((t) => el("li", { class: "row-tag", text: t })),
+  ].filter(Boolean);
+
+  const head = [
+    el("span", { class: "row-when", text: e.when || "" }),
+    el("span", { class: "row-title" }, [
+      el("strong", { text: role }),
+      org ? el("span", { class: "row-org", text: ` · ${org}` }) : null,
+    ]),
+    tags.length ? el("ul", { class: "row-tags", "aria-label": "Tags" }, tags) : el("span"),
+  ];
+
+  const hasImages = (e.images || []).some(isUploadedImage);
+  const body = [
+    e.description ? el("p", { class: "row-desc", text: e.description }) : null,
+    hasImages ? gallery(e.images) : null,
+    readMoreLink(section, e),
+  ].filter(Boolean);
+
+  // Nothing to open: a plain row with no arrow
+  if (!body.length) return el("div", { class: "row" }, [el("div", { class: "row-head" }, [...head, el("span")])]);
+
+  const arrow = el("span", { class: "row-arrow" });
+  arrow.innerHTML = CHEVRON;
+  return el("details", { class: "row" }, [
+    el("summary", { class: "row-head" }, [...head, arrow]),
+    el("div", { class: "row-body" }, body),
+  ]);
+}
+
 // ---------- Rendering ----------
 function render(c) {
   // Logo: "Ajay Hearn" -> "Ajay" + ".H"
@@ -36,31 +109,19 @@ function render(c) {
   document.querySelectorAll("[data-field]").forEach((node) => {
     node.textContent = fields[node.dataset.field] ?? "";
   });
-  if (c.name) document.title = `${c.name} | ${c.tagline?.split("·")[0].trim() || "Portfolio"}`;
 
-  document.getElementById("about-body").replaceChildren(
+  $("about-body")?.replaceChildren(
     ...(c.about || []).map((p) => el("p", { text: p }))
   );
 
-  document.getElementById("skills-list").replaceChildren(
-    ...(c.skills || []).map((group) =>
-      el("div", { class: "card skill-group" }, [
-        el("h3", {}, [
-          group.icon ? el("span", { "aria-hidden": "true", text: `${group.icon} ` }) : null,
-          document.createTextNode(group.title || ""),
-        ]),
-        el("ul", { class: "chips" }, (group.items || []).map((s) => el("li", { text: s }))),
-      ])
-    )
-  );
-
-  document.getElementById("projects-list").replaceChildren(
+  $("skills-list")?.replaceChildren(...(c.skills || []).map(skillGroup));
+  $("projects-list")?.replaceChildren(
     ...(c.projects || []).map((p) =>
       el("article", { class: "card project" }, [
         projectLinks(p),
         gallery(p.images),
         p.when ? el("span", { class: "when", text: p.when }) : null,
-        el("h3", { text: p.title }),
+        el("h2", { class: "project-title", text: p.title }), // h2: the page heading "Projects" is the h1
         el("p", { text: p.description }),
         el("ul", { class: "tags" }, (p.tags || []).map((t) => el("li", { text: t }))),
         readMoreLink("projects", p),
@@ -68,37 +129,38 @@ function render(c) {
     )
   );
 
-  const timeline = (section, entries) =>
-    (entries || []).map((e) =>
-      el("li", { class: "card" }, [
-        timelineMeta(e),
-        el("h3", { text: e.title }),
-        el("p", { text: e.description }),
-        gallery(e.images),
-        readMoreLink(section, e),
-      ])
-    );
-  document.getElementById("experience-list").replaceChildren(...timeline("experience", c.experience));
-  document.getElementById("education-list").replaceChildren(...timeline("education", c.education));
+  $("experience-list")?.replaceChildren(...(c.experience || []).map((e) => entryRow("experience", e)));
+  $("education-list")?.replaceChildren(...(c.education || []).map((e) => entryRow("education", e)));
+  for (const id of ["experience", "education"]) if ($(id)) $(id).hidden = !(c[id] || []).length;
 
   const certs = c.certifications || [];
-  document.getElementById("certs-heading").hidden = certs.length === 0;
-  document.getElementById("certs-list").replaceChildren(
+  if ($("certifications")) $("certifications").hidden = certs.length === 0;
+  $("certs-list")?.replaceChildren(
     ...certs.map((cert) =>
-      el("div", { class: "card cert" }, [
-        // An uploaded image takes the icon's place; otherwise show the chosen emoji
-        isUploadedImage(cert.images?.[0])
-          ? el("img", { class: "cert-icon", src: cert.images[0].src, alt: cert.images[0].alt || "", loading: "lazy" })
-          : el("span", { class: "cert-icon", "aria-hidden": "true", text: cert.icon || "🏅" }),
-        el("div", {}, [el("strong", { text: cert.title }), el("small", { text: cert.detail })]),
+      // Same row style as Education, but nothing to open: status | icon + name · provider
+      el("div", { class: "row cert-row" }, [
+        el("div", { class: "row-head" }, [
+          el("span", { class: "row-when", text: cert.detail || "" }),
+          el("span", { class: "row-title" }, [
+            // An uploaded image takes the icon's place; otherwise show the chosen emoji
+            isUploadedImage(cert.images?.[0])
+              ? el("img", { class: "row-icon", src: cert.images[0].src, alt: cert.images[0].alt || "", loading: "lazy" })
+              : el("span", { class: "row-icon", "aria-hidden": "true", text: cert.icon || "🏅" }),
+            el("span", {}, [
+              el("strong", { text: (cert.title || "").split(" · ")[0] }),
+              cert.title?.includes(" · ") ? el("span", { class: "row-org", text: ` · ${cert.title.split(" · ").slice(1).join(" · ")}` }) : null,
+            ]),
+          ]),
+          el("span"),
+          el("span"),
+        ]),
       ])
     )
   );
 
   const refs = c.references || [];
-  document.getElementById("references").hidden = refs.length === 0;
-  document.querySelector('.nav-links a[href="#references"]').parentElement.hidden = refs.length === 0;
-  document.getElementById("references-list").replaceChildren(
+  if ($("references")) $("references").hidden = refs.length === 0;
+  $("references-list")?.replaceChildren(
     ...refs.map((r) =>
       el("figure", { class: "card reference" }, [
         r.quote ? el("blockquote", { text: `“${r.quote}”` }) : null,
@@ -108,24 +170,17 @@ function render(c) {
   );
 
   const ct = c.contact || {};
-  document.getElementById("contact-links").replaceChildren(
+  $("contact-links")?.replaceChildren(
     ...[
       ct.email && link("Email me", `mailto:${ct.email}`, { icon: "✉️", class: "btn primary" }),
       link("LinkedIn", ct.linkedin, { class: "btn ghost" }),
-      link("Contact", "/contact", { class: "btn ghost" }),
       link("GitHub", ct.github, { class: "btn ghost" }),
       link("Download CV", ct.cv, { class: "btn ghost" }),
     ].filter(Boolean)
   );
 
-  // Number the visible sections 01, 02, 03... so hidden ones (e.g. References with none added) are skipped
-  let sectionNumber = 0;
-  document.querySelectorAll("main > section.section").forEach((section) => {
-    const num = section.querySelector(".section-num");
-    if (num && !section.hidden) num.textContent = `${String(++sectionNumber).padStart(2, "0")}.`;
-  });
-
-  typeTerminal(c.terminal || []);
+  applySiteChrome(c);
+  if ($("typed")) typeTerminal(c.terminal || []);
   // Arrived from a link like /#projects: jump again now that the sections are filled in
   if (!isReload && location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
   setUpReveal();
@@ -195,5 +250,6 @@ loadContent()
   .then(render)
   .catch((err) => {
     console.error(err);
-    document.querySelector(".lead").textContent = "Sorry, this page couldn't load. Please refresh.";
+    const msg = document.querySelector(".lead") || document.querySelector("main");
+    msg?.prepend(el("p", { class: "message", text: "Sorry, this page couldn't load. Please refresh." }));
   });

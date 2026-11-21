@@ -118,3 +118,19 @@ details.section > summary {
 .field.toggle input { width: 1.15rem; height: 1.15rem; accent-color: #0b74d6; }
 .field textarea.tall { min-height: 220px; }
 .thumbs.single { grid-template-columns: minmax(0, 220px); }
+
+/* Skills: one compact row per skill (icon, name, buttons) */
+.skill-rows { display: grid; gap: 0.45rem; margin-bottom: 0.6rem; }
+.skill-row { display: flex; align-items: center; gap: 0.4rem; }
+.skill-row input[type="text"] { flex: 1; min-width: 0; }
+.skill-icon-btn {
+  flex-shrink: 0; width: 2.6rem; height: 2.6rem; padding: 0.2rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px dashed #bcd3ea; border-radius: 8px; background: #fff; cursor: pointer;
+  font: inherit; font-size: 0.62rem; color: #0b74d6; line-height: 1.1;
+}
+.skill-icon-btn img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Page headings between groups of sections */
+.page-group { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #3f5b78; margin: 1.8rem 0 0.6rem; }
+.page-group:first-child { margin-top: 0.4rem; }

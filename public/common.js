@@ -111,10 +111,24 @@ function applySiteChrome(c) {
   if (logo && first) logo.textContent = first;
   const footerName = document.getElementById("footer-name");
   if (footerName) footerName.textContent = c.name || "";
-  // Only show References in the menu once at least one has been added
-  const refs = document.querySelector('.nav-links a[href="/#references"]');
-  if (refs) refs.parentElement.hidden = !(c.references || []).length;
+  const footerLinks = document.getElementById("footer-links");
+  if (footerLinks && !footerLinks.dataset.filled) {
+    footerLinks.dataset.filled = "1";
+    const ct = c.contact || {};
+    const extra = [link("LinkedIn", ct.linkedin), link("GitHub", ct.github), ct.email ? link("Email", `mailto:${ct.email}`) : null]
+      .filter(Boolean).map((a) => el("li", {}, [a]));
+    footerLinks.prepend(...extra);
+  }
 }
+
+// Highlight the menu link for the page you're on (Read more pages count as their section's page)
+function markCurrentPage(path = location.pathname.replace(/\.html$/, "").replace(/\/index$/, "/") || "/") {
+  document.querySelectorAll(".nav-links a").forEach((a) => {
+    if (a.getAttribute("href") === path) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
+}
+markCurrentPage();
 
 // ---------- Header controls: theme, phone menu, accessibility settings ----------
 function store(key, value) {

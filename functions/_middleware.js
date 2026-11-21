@@ -6,7 +6,7 @@ import { CONTENT_KEY } from "../lib/content.js";
 
 // Pages that get the saved title and description. Every page gets the saved image.
 const TEXT_PAGES = new Set(["/", "/index.html", "/details", "/details.html"]);
-const PAGES = new Set([...TEXT_PAGES, "/contact", "/contact.html", "/how-its-built", "/how-its-built.html"]);
+const PAGES = new Set([...TEXT_PAGES, "/experience", "/experience.html", "/projects", "/projects.html", "/contact", "/contact.html", "/how-its-built", "/how-its-built.html"]);
 
 class SetContent {
   constructor(value) { this.value = value; }

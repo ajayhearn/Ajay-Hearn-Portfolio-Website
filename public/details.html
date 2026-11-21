@@ -34,26 +34,25 @@
   </div>
 
   <header class="nav">
-    <a href="/" class="logo" aria-label="Ajay, home page"><span class="logo-cloud" aria-hidden="true">☁️</span> <span id="logo-first">Ajay</span></a>
-    <nav aria-label="Main">
-      <ul class="nav-links" id="site-menu">
-        <li><a href="/#about">About</a></li>
-        <li><a href="/#skills">Skills</a></li>
-        <li><a href="/#education">Education</a></li>
-        <li><a href="/#experience">Experience</a></li>
-        <li><a href="/#projects">Projects</a></li>
-        <li hidden><a href="/#references">References</a></li>
-        <li><a href="/#contact">Contact</a></li>
-      </ul>
-    </nav>
-    <div class="nav-controls">
-      <button class="icon-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
-      </button>
-      <!-- The accessibility button and its settings panel are added here by common.js -->
-      <button class="theme-toggle icon-btn" id="themeToggle" aria-pressed="false" aria-label="Dark mode">
-        <span class="icon-sun" aria-hidden="true">☀️</span><span class="icon-moon" aria-hidden="true">🌙</span>
-      </button>
+   <div class="nav-pill">
+      <a href="/" class="logo" aria-label="Ajay, home page"><span class="logo-cloud" aria-hidden="true">☁️</span> <span id="logo-first">Ajay</span></a>
+      <nav aria-label="Main">
+        <ul class="nav-links" id="site-menu">
+          <li><a href="/">Home</a></li>
+          <li><a href="/experience">Experience</a></li>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-controls">
+        <button class="icon-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
+        </button>
+        <!-- The accessibility button and its settings panel are added here by common.js -->
+        <button class="theme-toggle icon-btn" id="themeToggle" aria-pressed="false" aria-label="Dark mode">
+          <span class="icon-sun" aria-hidden="true">☀️</span><span class="icon-moon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -65,7 +64,15 @@
   </main>
 
   <footer class="footer">
-    <p>© <span id="year"></span> <span id="footer-name">Ajay Hearn</span> &middot; <a href="/how-its-built">How I built this site</a></p>
+    <div class="footer-inner">
+      <p>© <span id="year"></span> <span id="footer-name">Ajay Hearn</span></p>
+      <nav aria-label="Footer">
+        <ul class="footer-links" id="footer-links">
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/how-its-built">How I built this site</a></li>
+        </ul>
+      </nav>
+    </div>
   </footer>
 
   <script src="/common.js"></script>

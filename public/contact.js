@@ -82,4 +82,3 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-loadContent().then(applySiteChrome).catch(() => {});

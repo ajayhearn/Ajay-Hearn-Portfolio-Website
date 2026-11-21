@@ -1,5 +1,19 @@
 {
   "version": 1,
-  "include": ["/", "/index.html", "/details", "/details.html", "/contact", "/contact.html", "/how-its-built", "/how-its-built.html", "/api/*"],
+  "include": [
+    "/",
+    "/index.html",
+    "/experience",
+    "/experience.html",
+    "/projects",
+    "/projects.html",
+    "/details",
+    "/details.html",
+    "/contact",
+    "/contact.html",
+    "/how-its-built",
+    "/how-its-built.html",
+    "/api/*"
+  ],
   "exclude": []
 }

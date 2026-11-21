@@ -4,6 +4,7 @@
 // type: text | textarea | url | email | tags (comma-separated list)
 const SCHEMA = [
   {
+    page: "Home page",
     title: "Intro",
     hint: "The big heading at the top of the page.",
     fields: [
@@ -13,6 +14,7 @@ const SCHEMA = [
     ],
   },
   {
+    page: "Home page",
     title: "Terminal box",
     hint: "The lines typed out in the terminal window next to the intro.",
     listKey: "terminal",
@@ -23,6 +25,7 @@ const SCHEMA = [
     ],
   },
   {
+    page: "Home page",
     title: "About me",
     hint: "Each box is one paragraph.",
     listKey: "about",
@@ -31,24 +34,16 @@ const SCHEMA = [
     fields: [{ label: "Paragraph", type: "textarea" }],
   },
   {
-    title: "Skills",
-    listKey: "skills",
-    itemName: "skill group",
-    fields: [
-      { key: "icon", label: "Emoji", short: true },
-      { key: "title", label: "Group name" },
-      { key: "items", label: "Skills", type: "tags" },
-    ],
-  },
-  {
+    page: "Experience page",
     title: "Education",
-    hint: "Shown as a timeline. Put the most recent first.",
+    hint: "Each entry is a row that opens to show the details. Put the most recent first.",
     listKey: "education",
     itemName: "education entry",
     fields: [
       { key: "when", label: "Dates" },
-      { key: "location", label: "Location (e.g. Exeter, Devon)" },
       { key: "title", label: "Title (e.g. Qualification · School)" },
+      { key: "highlight", label: "Highlight badge (optional, e.g. Gold medal or Distinction)" },
+      { key: "tags", label: "Tags shown on the row (optional, e.g. AWS, Linux)", type: "tags" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "images", label: "Images", type: "images" },
       { key: "readMore", label: "Show a “Read more” button linking to its own page", type: "toggle" },
@@ -56,10 +51,11 @@ const SCHEMA = [
     ],
   },
   {
+    page: "Experience page",
     title: "Certifications",
     listKey: "certifications",
     itemName: "certification",
-    hint: "Shown at the bottom of the Education section. Each certification shows an emoji icon. Upload an image (e.g. the badge or logo) to show it in the icon's place instead.",
+    hint: "Shown in its own Certifications section, after Education. Each certification shows an emoji icon. Upload an image (e.g. the badge or logo) to show it in the icon's place instead.",
     fields: [
       { key: "icon", label: "Emoji", short: true, placeholder: "🏅" },
       { key: "title", label: "Certification" },
@@ -68,14 +64,16 @@ const SCHEMA = [
     ],
   },
   {
+    page: "Experience page",
     title: "Experience",
-    hint: "Work experience and placements, shown as a timeline. Put the most recent first.",
+    hint: "Work experience and placements. Each one is a row that opens to show the details. Put the most recent first.",
     listKey: "experience",
     itemName: "experience entry",
     fields: [
       { key: "when", label: "Dates" },
-      { key: "location", label: "Location (e.g. Exeter, Devon)" },
       { key: "title", label: "Title (e.g. Role · Company)" },
+      { key: "highlight", label: "Highlight badge (optional, e.g. Gold medal or Distinction)" },
+      { key: "tags", label: "Tags shown on the row (optional, e.g. AWS, Linux)", type: "tags" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "images", label: "Images", type: "images", max: 6 },
       { key: "readMore", label: "Show a “Read more” button linking to its own page", type: "toggle" },
@@ -83,6 +81,31 @@ const SCHEMA = [
     ],
   },
   {
+    page: "Experience page",
+    title: "References",
+    hint: "Shown as quote cards on the Experience page, under Experience. The section is hidden on the site while this list is empty. Avoid putting referees' phone numbers or emails here, because the site is public.",
+    listKey: "references",
+    itemName: "reference",
+    fields: [
+      { key: "name", label: "Name" },
+      { key: "role", label: "Role and organisation (e.g. Placement Manager · NHS)" },
+      { key: "quote", label: "What they said", type: "textarea" },
+    ],
+  },
+  {
+    page: "Experience page",
+    title: "Skills",
+    hint: "Shown on the Experience page. Each group is a box of skills; give each skill a small icon (a square PNG or JPG logo works best).",
+    listKey: "skills",
+    itemName: "skill group",
+    fields: [
+      { key: "title", label: "Group name (e.g. Cloud)" },
+      { key: "description", label: "Short description (e.g. Platforms I've built on)" },
+      { key: "skills", label: "Skills", type: "skillList" },
+    ],
+  },
+  {
+    page: "Projects page",
     title: "Projects",
     listKey: "projects",
     itemName: "project",
@@ -99,17 +122,7 @@ const SCHEMA = [
     ],
   },
   {
-    title: "References",
-    hint: "Shown as quote cards. The section is hidden on the site while this list is empty. Avoid putting referees' phone numbers or emails here, because the site is public.",
-    listKey: "references",
-    itemName: "reference",
-    fields: [
-      { key: "name", label: "Name" },
-      { key: "role", label: "Role and organisation (e.g. Placement Manager · NHS)" },
-      { key: "quote", label: "What they said", type: "textarea" },
-    ],
-  },
-  {
+    page: "Contact page",
     title: "Contact",
     objectKey: "contact",
     fields: [
@@ -121,6 +134,7 @@ const SCHEMA = [
     ],
   },
   {
+    page: "Whole site",
     title: "Link preview",
     hint: "The card shown when your link is pasted into LinkedIn, Discord, WhatsApp, Slack and similar apps. Changes apply as soon as you save, but apps keep old previews for a while (see MAINTAINING.md). The default image has the current name and headline written on it, so upload your own if you change the text.",
     objectKey: "preview",
@@ -284,11 +298,69 @@ function imagesField(field, obj, key) {
   ]);
 }
 
+// ---------- Skills: a compact list of name + icon ----------
+function skillListField(field, obj, key) {
+  const skills = (obj[key] ||= []);
+  const rows = skills.map((skill, i) => {
+    skill.images ||= [];
+    const icon = skill.images[0];
+    const fileInput = el("input", { type: "file", accept: "image/png,image/jpeg,image/webp", hidden: true });
+    const iconBtn = el("button", {
+      type: "button",
+      class: "skill-icon-btn",
+      title: icon ? "Change icon" : "Add icon",
+      "aria-label": `${icon ? "Change" : "Add"} icon for ${skill.name || "this skill"}`,
+      onclick: () => fileInput.click(),
+    }, [icon ? el("img", { src: icon.src, alt: "" }) : el("span", { text: "+ Icon" })]);
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      iconBtn.disabled = true;
+      try {
+        skill.images = [{ src: await uploadImage(file), alt: "" }];
+        markDirty();
+        build();
+      } catch (err) {
+        iconBtn.disabled = false;
+        alert(`Couldn't upload that icon: ${err.message}`);
+      }
+    });
+    const move = (d) => {
+      const j = i + d;
+      if (j < 0 || j >= skills.length) return;
+      [skills[i], skills[j]] = [skills[j], skills[i]];
+      markDirty();
+      build();
+    };
+    return el("div", { class: "skill-row" }, [
+      iconBtn,
+      fileInput,
+      el("input", {
+        type: "text",
+        value: skill.name || "",
+        placeholder: "Skill name",
+        "aria-label": "Skill name",
+        oninput: (e) => { skill.name = e.target.value; markDirty(); },
+      }),
+      icon ? el("button", { type: "button", class: "btn small ghost", text: "No icon", title: "Remove the icon", onclick: () => { skill.images = []; markDirty(); build(); } }) : null,
+      el("button", { type: "button", class: "btn small ghost", text: "↑", title: "Move up", disabled: i === 0, onclick: () => move(-1) }),
+      el("button", { type: "button", class: "btn small ghost", text: "↓", title: "Move down", disabled: i === skills.length - 1, onclick: () => move(1) }),
+      el("button", { type: "button", class: "btn small danger", text: "✕", title: "Remove skill", onclick: () => { skills.splice(i, 1); markDirty(); build(); } }),
+    ]);
+  });
+  return el("div", { class: "field" }, [
+    el("span", { text: `${field.label} (${skills.length})` }),
+    el("div", { class: "skill-rows" }, rows),
+    el("button", { type: "button", class: "btn small ghost", text: "+ Add skill", onclick: () => { skills.push({ name: "", images: [] }); markDirty(); build(); } }),
+  ]);
+}
+
 // ---------- Form building ----------
 // Creates one input bound to obj[key]. For plain lists, obj is the array and key is the index.
 function fieldInput(field, obj, key) {
   const type = field.type || "text";
   if (type === "images") return imagesField(field, obj, key);
+  if (type === "skillList") return skillListField(field, obj, key);
   if (type === "toggle") {
     const box = el("input", { type: "checkbox", checked: obj[key] === true });
     box.addEventListener("change", () => {
@@ -343,7 +415,7 @@ function fieldsFor(allFields, obj) {
 function emptyItem(section) {
   if (section.plainList) return "";
   const item = {};
-  section.fields.forEach((f) => (item[f.key] = f.type === "tags" || f.type === "images" ? [] : f.type === "toggle" ? false : ""));
+  section.fields.forEach((f) => (item[f.key] = ["tags", "images", "skillList"].includes(f.type) ? [] : f.type === "toggle" ? false : ""));
   return item;
 }
 
@@ -389,7 +461,8 @@ function listEditor(section) {
 }
 
 function build() {
-  const body = SCHEMA.map((section) => {
+  let lastPage = null;
+  const body = SCHEMA.flatMap((section) => {
     let inner;
     if (section.listKey) inner = listEditor(section);
     else if (section.objectKey) inner = fieldsFor(section.fields, (content[section.objectKey] ||= {}));
@@ -402,7 +475,10 @@ function build() {
     details.addEventListener("toggle", () => {
       details.open ? openSections.add(section.title) : openSections.delete(section.title);
     });
-    return details;
+    // A small heading whenever the page changes ("Home page", "Experience page"...)
+    const heading = section.page !== lastPage ? el("h2", { class: "page-group", text: section.page }) : null;
+    lastPage = section.page;
+    return heading ? [heading, details] : [details];
   });
   form.replaceChildren(...body);
 }
@@ -472,6 +548,12 @@ async function load() {
     content.preview.title ||= PREVIEW_DEFAULTS.title;
     content.preview.description ||= content.intro || PREVIEW_DEFAULTS.description;
     content.preview.images ||= [];
+    // Older saves stored each skill as just a name; give them the new { name, images } shape
+    for (const g of content.skills || []) {
+      if (!Array.isArray(g.skills)) g.skills = (g.items || []).map((name) => ({ name, images: [] }));
+      delete g.items;
+      delete g.icon;
+    }
     document.getElementById("who").textContent = "Logged in";
     logoutBtn.hidden = false;
     messageEl.hidden = true;

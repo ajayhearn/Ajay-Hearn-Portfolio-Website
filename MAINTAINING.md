@@ -15,8 +15,9 @@ certifications, references, images and links.
 | To change | Edit |
 | --- | --- |
 | Colours, fonts, spacing, layout | `public/styles.css` |
-| Page structure, menu links, section order | `public/index.html` |
-| How content is shown on the page | `public/script.js` |
+| The pages and what's on each | `public/index.html` (Home: intro, About me, Skills), `public/experience.html` (Education, Certifications, Experience, References), `public/projects.html`, `public/contact.html` |
+| Menu links | the `nav-links` list at the top of every `.html` page |
+| How content is shown on the pages | `public/script.js` (shared by Home, Experience, Projects and Contact) |
 | Helpers shared by both pages (theme toggle, images, links) | `public/common.js` |
 | The Read more page | `public/details.html`, `public/details.js` |
 | Accessibility menu and phone menu | `public/common.js` (bottom of the file); styles at the end of `public/styles.css` |
