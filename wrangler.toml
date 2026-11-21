@@ -14,3 +14,8 @@ id = "1e39c390957448aaa3840771f8bd34d8"
 #   POLICY_AUD    the Access application's "Application Audience (AUD) Tag"
 #   ADMIN_EMAILS  comma-separated emails allowed to edit
 # Set each one with:  npx wrangler pages secret put <NAME> --project-name ajay-hearn-portfolio
+
+[vars]
+# Cloudflare Turnstile site key for the contact form. This one is public (it's sent to every visitor);
+# the matching TURNSTILE_SECRET_KEY is a secret set in the Cloudflare dashboard.
+TURNSTILE_SITE_KEY = "0x4AAAAAAGMDYrjiqIp3o0Hf"

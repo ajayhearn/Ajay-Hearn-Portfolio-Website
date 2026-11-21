@@ -148,7 +148,7 @@
       </ul>
 
       <h2>How the contact form works</h2>
-      <p>The form sends the message to a Pages Function. The function checks it and posts it to a private channel in my Discord server using a <strong>Discord webhook</strong>. The webhook address is kept as an encrypted secret, so visitors never see it. A hidden "honeypot" box catches spam bots, and each connection can send 5 messages an hour. Messages can't ping anyone in the server.</p>
+      <p>The form sends the message to a Pages Function. The function checks it and posts it to a private channel in my Discord server using a <strong>Discord webhook</strong>. The webhook address is kept as an encrypted secret, so visitors never see it. Before anything is stored or sent, <strong>Cloudflare Turnstile</strong> checks that the visitor is a person, and the function confirms that result with Cloudflare. This means requests sent straight to the API without passing the check are refused. A hidden "honeypot" box also catches simple bots, and each connection can send 5 messages an hour. Messages can't ping anyone in the server.</p>
 
       <h2>Security</h2>
       <ul>

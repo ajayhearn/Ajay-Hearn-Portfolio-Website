@@ -608,3 +608,6 @@ html:not([data-theme="dark"]):not([data-contrast="on"]) .how-tags { color: #8f47
 
 /* Read more pages: the "Experience · dates · location" line above the title */
 .details-card .eyebrow { font-family: "Inter", system-ui, sans-serif; font-weight: 600; }
+
+/* Turnstile human check on the contact form */
+.turnstile { min-height: 65px; }

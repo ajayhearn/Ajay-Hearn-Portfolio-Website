@@ -4,6 +4,9 @@
 // Set it with:  npx wrangler pages secret put DISCORD_WEBHOOK_URL --project-name ajay-hearn-portfolio
 //
 // Spam protection:
+//  - Cloudflare Turnstile: the browser must pass a human check, and the server confirms it with
+//    Cloudflare before anything is stored or sent. Needs TURNSTILE_SITE_KEY (public, in wrangler.toml)
+//    and the secret TURNSTILE_SECRET_KEY. Until both are set, the form works without it.
 //  - "website" is a hidden field people never see. Bots that fill in every box get a fake "sent".
 //  - Each connection can send 5 messages per hour (counted in KV).
 //  - Requiring JSON means other websites can't submit the form on a visitor's behalf.
@@ -13,6 +16,30 @@ const WEBHOOK = /^https:\/\/(discord\.com|discordapp\.com)\/api\/webhooks\/\d+\/
 const EMAIL = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
 
 const reply = (status, body) => Response.json(body, { status });
+
+// GET /api/contact -> tells the contact page whether to show the Turnstile check
+export function onRequestGet({ env }) {
+  const siteKey = env.TURNSTILE_SECRET_KEY && env.TURNSTILE_SITE_KEY ? env.TURNSTILE_SITE_KEY : null;
+  return Response.json({ turnstileSiteKey: siteKey }, { headers: { "Cache-Control": "no-store" } });
+}
+
+// Ask Cloudflare whether the Turnstile token from the browser is genuine (each token works once)
+async function passedTurnstile(env, token, ip) {
+  if (!token) return false;
+  const form = new FormData();
+  form.append("secret", env.TURNSTILE_SECRET_KEY);
+  form.append("response", token);
+  if (ip) form.append("remoteip", ip);
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
+    const result = await res.json();
+    if (!result.success) console.log("Turnstile rejected", result["error-codes"]);
+    return result.success === true;
+  } catch (err) {
+    console.error("Turnstile check failed", err);
+    return false;
+  }
+}
 
 function clean(value, max) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
@@ -43,8 +70,14 @@ export async function onRequestPost({ env, request }) {
   if (!EMAIL.test(email)) return reply(400, { error: "Please enter a valid email address." });
   if (message.length < 10) return reply(400, { error: "Please write a message of at least 10 characters." });
 
+  // Human check, before anything is written to storage, so bots can't use up the daily KV write limit
+  const ip = request.headers.get("CF-Connecting-IP");
+  if (env.TURNSTILE_SECRET_KEY && !(await passedTurnstile(env, clean(body.turnstileToken, 2048), ip))) {
+    return reply(403, { error: "The verification check didn't pass. Please try again." });
+  }
+
   // Rate limit per connection
-  const key = `contact:${request.headers.get("CF-Connecting-IP") || "unknown"}`;
+  const key = `contact:${ip || "unknown"}`;
   if (env.CONTENT) {
     const count = Number((await env.CONTENT.get(key)) || 0);
     if (count >= MAX_PER_HOUR) {
